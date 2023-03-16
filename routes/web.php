@@ -20,7 +20,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsersController;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [LoginController::class, 'index']);
 Route::get('/dashboard', [HomeController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/login', [LoginController::class, 'auth']);
