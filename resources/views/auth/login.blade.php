@@ -6,7 +6,7 @@
       <div class="container container-tight py-4">
         <div class="text-center mb-4">
             <i class="ti ti-square-rounded-letter-t"></i>
-            <a class="text">Turus Asri</a>
+            <a class="text">Dashboard Turus Asri</a>
         </div>
         <div class="card card-md">
           <div class="card-body">
