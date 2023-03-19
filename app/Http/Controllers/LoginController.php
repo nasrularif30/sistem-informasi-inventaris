@@ -14,7 +14,7 @@ class LoginController extends Controller
         // pass this data to your view file
 
         // passing data to view file
-        return view('auth.login');
+        return view('login');
     }
     public function auth(Request $request)
     {
