@@ -26,16 +26,10 @@ use Yajra\Datatables\Datatables;
 Route::get('/', [LoginController::class, 'index']);
 Route::get('/dashboard', [HomeController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
-Route::post('/login', [LoginController::class, 'auth']);
+Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
 Route::get('users', [UsersController::class, 'index'])->name('users.index');
-
-Auth::routes();
-
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-
-Auth::routes();
-
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::get('users/list', [UsersController::class, 'getAllUser'])->name('users.list');
+Route::post('users/create', [UsersController::class, 'create'])->name('users.create');
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'handle'])->name('register');

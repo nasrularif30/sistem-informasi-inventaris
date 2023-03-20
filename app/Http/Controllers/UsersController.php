@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -12,22 +14,23 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
+    {
+        return view('users.index');
+    }
+
+    public function getAllUsers(Request $request)
     {        
         if ($request->ajax()) {
             $data = DB::select('select * from user_login');
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
- 
-                       $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
-
-                        return $btn;
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                    return $actionBtn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-    
-        return view('users.index');
     }
 
     /**
@@ -35,9 +38,35 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        request()->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'min:4', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'level' => ['string'],
+            'id_lokasi' => ['integer']
+        ]);
+        $data = $request->input();
+			try{
+                $check = DB::select('select * from user_login where username = ?', [request('username')]);
+                if(count($check) > 0){
+                    return redirect('users')->with('failed',"Username already exist");
+                } else{
+                    DB::table('user_login')->insert([
+                        'nama' => request('nama'),
+                        'username' => request('username'),
+                        'password' => Hash::make(request('password')),
+                        'level' => request('level') ?? 5,
+                        'id_lokasi' => request('id_lokasi') ?? 0
+                    ]);
+                    return redirect('users')->with('status',"Insert successfully");
+                }
+			}
+			catch(Exception $e){
+				return redirect('users')->with('failed',"operation failed");
+			}
+        
     }
 
     /**

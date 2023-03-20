@@ -40,7 +40,7 @@
                 </label>
               </div>
               <div class="form-footer">
-                <button href="/dashboard" type="submit" class="btn btn-primary w-100">Login</button>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
               </div>
             </form>
           </div>

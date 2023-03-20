@@ -39,18 +39,15 @@
                     <div class="card-body border-bottom py-3">
                     </div>
                     <div class="table-responsive">
-                        <table class="table card-table table-vcenter text-nowrap datatable table-user">
+                        <table class="table card-table table-vcenter text-nowrap datatable table-user" id="tableUser">
                             <thead>
                             <tr>
-                                <th class="w-1"><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"></th>
-                                <th class="w-1">No. <!-- Download SVG icon from http://tabler-icons.io/i/chevron-up -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm icon-thick" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 15l6 -6l6 6" /></svg>
-                                </th>
+                                <th class="w-1">No</th>
                                 <th>Nama</th>
                                 <th>Username</th>
                                 <th>Level</th>
                                 <th>Status</th>
-                                <th></th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -113,11 +110,11 @@
         </script>
         <script type="text/javascript">
             $(function () {
-            
-            var table = $('.datatable').DataTable({
+            var table = $('.table-user').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('users.index') }}",
+                paging: true,
+                ajax: "{{ route('users.list') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'nama', name: 'nama'},
