@@ -28,7 +28,7 @@ Route::get('/dashboard', [HomeController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
 Route::get('users', [UsersController::class, 'index'])->name('users.index');
-Route::get('users/list', [UsersController::class, 'getAllUser'])->name('users.list');
+Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list');
 Route::post('users/create', [UsersController::class, 'create'])->name('users.create');
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');

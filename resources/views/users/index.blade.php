@@ -37,24 +37,22 @@
                     </button>
                     </div>
                     <div class="card-body border-bottom py-3">
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table card-table table-vcenter text-nowrap datatable table-user" id="tableUser">
-                            <thead>
-                            <tr>
-                                <th class="w-1">No</th>
-                                <th>Nama</th>
-                                <th>Username</th>
-                                <th>Level</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="card-footer d-flex align-items-center">
+                        <div class="table-responsive">
+                            <table class="table table-striped card-table table-vcenter text-nowrap datatable table-user" id="tableUser" style="width:100%">
+                                <thead class="my-1">
+                                    <tr>
+                                        <th class="w-1">No</th>
+                                        <th>Nama</th>
+                                        <th>Username</th>
+                                        <th>Level</th>
+                                        <th>Lokasi</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-tbody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -79,7 +77,7 @@
             </div>
         </div>
     </div>
-    @push('script')
+    @stack('scripts')
     <script  type="text/javascript" >
         // display a modal
         $(document).on('click', '#addUser', function(event) {
@@ -110,27 +108,25 @@
         </script>
         <script type="text/javascript">
             $(function () {
-            var table = $('.table-user').DataTable({
-                processing: true,
-                serverSide: true,
-                paging: true,
-                ajax: "{{ route('users.list') }}",
-                columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'nama', name: 'nama'},
-                    {data: 'username', name: 'username'},
-                    {data: 'level', name: 'level'},
-                    {data: 'status', name: 'status'},
-                    {
-                        data: 'action', 
-                        name: 'action', 
-                        orderable: true, 
-                        searchable: true
-                    },
-                ]
-            });
-            
+                var table = $('.table-user').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    paging: true,
+                    ajax: "{{ route('users.list') }}",
+                    columns: [
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                        {data: 'nama', name: 'nama'},
+                        {data: 'username', name: 'username'},
+                        {data: 'level', name: 'level'},
+                        {data: 'id_lokasi', name: 'lokasi'},
+                        {
+                            data: 'action', 
+                            name: 'action', 
+                            orderable: false, 
+                            searchable: false
+                        },
+                    ]
+                });
             });
     </script>
-    @endpush
         @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use DataTables;
 
 class UsersController extends Controller
 {
@@ -19,18 +20,32 @@ class UsersController extends Controller
     }
 
     public function getAllUsers(Request $request)
-    {        
+    {   
+             
         if ($request->ajax()) {
-            $data = DB::select('select * from user_login');
+            $data = DB::table('user_login')->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">
+                                        <i class="ti ti-edit"></i>
+                                        Edit
+                                    </a>  
+                                    <a href="javascript:void(0)" class="changepass btn btn-yellow btn-sm">
+                                        <i class="ti ti-key"></i>
+                                        Change
+                                    </a>
+                                    <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">
+                                        <i class="ti ti-trash"></i>
+                                        Delete
+                                    </a>';
                     return $actionBtn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+        // echo json_encode($data->toArray());
+        return view('users.index');
     }
 
     /**
