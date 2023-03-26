@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "realrashid/sweet-alert": "^6.0",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {

@@ -23,19 +23,22 @@ class UsersController extends Controller
     {   
              
         if ($request->ajax()) {
-            $data = DB::table('user_login')->get();
+            $data = DB::table('user_login')
+                        ->join('user_level', 'user_login.level', '=', 'user_level.id')
+                        ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
+                        ->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">
+                    $actionBtn = '<a data-id="'.$row->id.'" class="edit btn btn-primary btn-sm">
                                         <i class="ti ti-edit"></i>
                                         Edit
                                     </a>  
-                                    <a href="javascript:void(0)" class="changepass btn btn-yellow btn-sm">
+                                    <a data-id="'.$row->id.'" class="changepass btn btn-yellow btn-sm">
                                         <i class="ti ti-key"></i>
                                         Change
                                     </a>
-                                    <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">
+                                    <a data-id="'.$row->id.'" class="delete btn btn-danger btn-sm">
                                         <i class="ti ti-trash"></i>
                                         Delete
                                     </a>';
@@ -58,7 +61,7 @@ class UsersController extends Controller
         request()->validate([
             'nama' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:4', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:5', 'confirmed'],
             'level' => ['string'],
             'id_lokasi' => ['integer']
         ]);
@@ -112,9 +115,16 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+        $id = $request->id;
+        $data = DB::table('user_login')
+        ->join('user_level', 'user_login.level', '=', 'user_level.id')
+        ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
+        ->where('user_login.id', $id)
+        ->get()
+        ->toArray();
+        return Response()->json($data);
     }
 
     /**
@@ -135,8 +145,10 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->id;
+        DB::table('user_login')->where('id', $id)->delete();
+        return response()->json(['success'=>'Sukses menghapus data']);
     }
 }

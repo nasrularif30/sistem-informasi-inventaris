@@ -11,7 +11,7 @@
         <div class="card card-md">
           <div class="card-body">
             <h2 class="h2 text-center mb-4">Silakan login</h2>
-            <form action="/login" method="POST" autocomplete="off">
+            <form action="login.auth" method="POST" autocomplete="off">
                 @csrf
               <div class="mb-3">
                 <label class="form-label">Username</label>

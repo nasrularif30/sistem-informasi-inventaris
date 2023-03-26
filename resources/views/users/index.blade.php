@@ -77,6 +77,24 @@
             </div>
         </div>
     </div>
+    <!-- edit modal -->
+    <div class="modal fade" id="modalUserEdit" tabindex="-1" role="dialog" aria-labelledby="labelModalUser"
+        aria-hidden="true">
+        <div class="modal-dialog md" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleEdit">Edit Data User</h5>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body" id="modalUserEditBody">
+                    <div>
+                        @include('users.edit')
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @stack('scripts')
     <script  type="text/javascript" >
         // display a modal
@@ -108,6 +126,11 @@
         </script>
         <script type="text/javascript">
             $(function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
                 var table = $('.table-user').DataTable({
                     processing: true,
                     serverSide: true,
@@ -126,7 +149,61 @@
                             searchable: false
                         },
                     ]
+                }); 
+                $('body').on('click', '.edit', function () {
+                    var id = $(this).data('id');
+                    $.get("{{ route('users.edit') }}" +'?id=' + id, function (data) {
+                        $('#modalTitleEdit').html("Edit Data User");
+                        $('#savedata').val("edit-user");
+                        $('#modalUserEdit').modal('show');
+                        $('#nama').val(data.nama);
+                        $('#username').val(data.username);
+                        $('#level').val(data.level_id);
+                        $('#last_login').val(data.last_login);
+                        $('#create_at').val(data.create_at);
+                    })
+                });
+                    
+                $('body').on('click', '.delete', function () {
+                
+                var id = $(this).data("id");
+                confirm("Apakah anda yakin menghapus data ini?");
+            
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('users.delete') }}"+'?id='+id,
+                    success: function (data) {
+                        table.draw();
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
                 });
             });
+            });  
+                  
+            // function edit(id){
+            // $.ajaxSetup({
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     }
+            //     });
+            //     $.ajax({
+            //     type:"POST",
+            //     url: "{{ route('users.edit') }}",
+            //     data: { id: id },
+            //     dataType: 'json',
+            //     success: function(res){
+            //             $('#modalTitle').html("Edit User");
+            //             $('#modalUserBody').modal('show');
+            //         //   $('#user_id').val(res.id);
+            //             $('#nama').val(res.nama);
+            //             $('#username').val(res.username);
+            //             $('#level').val(res.level_id);
+            //         //   $('#last_login').val(res.last_login);
+            //         //   $('#create_at').val(res.create_at);
+            //         }
+            //     });
+            // }
     </script>
         @endsection

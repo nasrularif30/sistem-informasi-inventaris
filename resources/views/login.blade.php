@@ -11,6 +11,12 @@
         <div class="card card-md">
           <div class="card-body">
             <h2 class="h2 text-center mb-4">Silakan login</h2>
+            <hr>
+            @if(session('error'))
+                <div class="alert alert-danger">
+                  <b>Login gagal!</b> {{ session('error') }}
+                </div>
+            @endif
             <form action="{{ route('login.auth') }}" method="POST" autocomplete="off">
                 @csrf
               <div class="mb-3">

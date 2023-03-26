@@ -24,12 +24,14 @@ use App\Http\Controllers\Auth\RegisterController;
 use Yajra\Datatables\Datatables;
 
 Route::get('/', [LoginController::class, 'index']);
-Route::get('/dashboard', [HomeController::class, 'index']);
-Route::get('/login', [LoginController::class, 'index']);
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
 Route::get('users', [UsersController::class, 'index'])->name('users.index');
 Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list');
 Route::post('users/create', [UsersController::class, 'create'])->name('users.create');
+Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit');
+Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete');
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'handle'])->name('register');

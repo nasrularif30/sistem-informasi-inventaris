@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Session;
 
 class LoginController extends Controller
 {
@@ -16,28 +17,37 @@ class LoginController extends Controller
         // pass this data to your view file
 
         // passing data to view file
-        return view('login');
+        if(Auth::check()){
+            return redirect('dashboard');
+        } else{
+            return view('login');
+        }
     }
     public function auth(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required']
-        ]);
-        $check = DB::select('select * from user_login where username = ? and password = ?', [$request['username'], Hash::make($request['password'])]);
-        if(count($check) > 0){
-            // Session::put('username', $check->username);
-            // Session::put('level', $check->level);
-            // Session::put('id_lokasi', $check->id_lokasi);
-            // $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+        $credentials = [
+            'username' => $request->input('username'),
+            'password' => $request->input('password')
+        ];
+        $check = DB::table('user_login')
+                    ->where('username', $credentials['username'])
+                    ->get()
+                    ->toArray();
+        if(count($check)>0){
+            if(Hash::check($credentials['password'], $check[0]->password)){
+                Session::put('username', $check[0]->username);
+                Session::put('level', $check[0]->level);
+                Session::put('id_lokasi', $check[0]->id_lokasi);
+                $request->session()->regenerate();
+                return redirect()->intended('dashboard');
+            }
+            else{
+                $request->session()->flash('error', 'Username atau password tidak benar');
+                return redirect('/');
+            }
         } else{
-            return back()->with('loginError', 'Login failed');
+            $request->session()->flash('error', 'Username tidak terdaftar');
+            return redirect('/');
         }
-        // if (Auth::attempt($credentials)) {
-        //     $request->session()->regenerate();
-        //     return redirect()->intended('/dashboard');
-        // }
-        return Redirect::to("login")->withSuccess('Oppes! You have entered invalid credentials');
     }
 }
