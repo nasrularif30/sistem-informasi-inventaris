@@ -65,11 +65,13 @@ class UsersController extends Controller
             'level' => ['string'],
             'id_lokasi' => ['integer']
         ]);
+        $success = false;
+        $message = 'error';
         $data = $request->input();
 			try{
                 $check = DB::select('select * from user_login where username = ?', [request('username')]);
                 if(count($check) > 0){
-                    return redirect('users')->with('failed',"Username already exist");
+                    $message = 'Username telah digunakan';
                 } else{
                     DB::table('user_login')->insert([
                         'nama' => request('nama'),
@@ -78,12 +80,19 @@ class UsersController extends Controller
                         'level' => request('level') ?? 5,
                         'id_lokasi' => request('id_lokasi') ?? 0
                     ]);
-                    return redirect('users')->with('status',"Insert successfully");
+                    $success = true;
+                    $message = 'User '.request('nama').' berhasil ditambahkan!';
                 }
 			}
 			catch(Exception $e){
-				return redirect('users')->with('failed',"operation failed");
+				$message = 'error, '.$e;
 			}
+            
+        //  return response
+            return response()->json([
+                'success' => $success,
+                'message' => $message,
+            ]);
         
     }
 
@@ -95,7 +104,48 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        request()->validate([
+            'id' => ['integer'],
+            'nama' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'min:4', 'max:255'],
+            'old_username' => ['string', 'min:4', 'max:255'],
+            'level' => ['string'],
+            'id_lokasi' => ['integer']
+        ]);
+        $success = false;
+        $message = 'error';
+        $data = $request->input();
+        if(request('username') != request('old_username')){
+            $check = DB::select('select * from user_login where username = ?', [request('username')]);
+            if(count($check) > 0){
+                $message = 'Username telah digunakan';
+            } else{
+                DB::table('user_login')->where('id', request('id'))->update([
+                    'nama' => request('nama'),
+                    'username' => request('username'),
+                    'level' => request('level') ?? 5,
+                    'id_lokasi' => request('id_lokasi') ?? 0
+                ]);
+                $success = true;
+                $message = 'User '.request('nama').' berhasil diperbarui!';
+            }
+
+        } else{
+            DB::table('user_login')->where('id', request('id'))->update([
+                'nama' => request('nama'),
+                'username' => request('username'),
+                'level' => request('level') ?? 5,
+                'id_lokasi' => request('id_lokasi') ?? 0
+            ]);
+            $success = true;
+            $message = 'User '.request('nama').' berhasil diperbarui!';
+        }
+            
+        //  return response
+            return response()->json([
+                'success' => $success,
+                'message' => $message,
+            ]);
     }
 
     /**
@@ -148,7 +198,20 @@ class UsersController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        DB::table('user_login')->where('id', $id)->delete();
-        return response()->json(['success'=>'Sukses menghapus data']);
+        $delete = DB::table('user_login')->where('id', $id)->delete();
+        // check data deleted or not
+        if ($delete == 1) {
+            $success = true;
+            $message = "User deleted successfully";
+        } else {
+            $success = false;
+            $message = "User not found";
+        }
+
+        //  return response
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
     }
 }

@@ -27,9 +27,11 @@ Route::get('/', [LoginController::class, 'index']);
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
-Route::get('users', [UsersController::class, 'index'])->name('users.index');
+Route::get('users', [UsersController::class, 'index'])->name('users');
+// Route::post('users', [UsersController::class, 'index'])->name('users.index');
 Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list');
 Route::post('users/create', [UsersController::class, 'create'])->name('users.create');
+Route::post('users/store', [UsersController::class, 'store'])->name('users.store');
 Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit');
 Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete');
 

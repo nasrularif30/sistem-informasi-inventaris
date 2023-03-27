@@ -33,7 +33,7 @@
                     <h3 class="card-title">Data user akses</h3>
                     <button id="addUser" name="addUser" type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modalUser">
                         <i class="ti ti-plus"></i>
-                        Create New User
+                        Tambah user baru
                     </button>
                     </div>
                     <div class="card-body border-bottom py-3">
@@ -71,24 +71,6 @@
                 </div>
                 <div class="modal-body" id="modalUserBody">
                     <div>
-                        @include('auth.register')
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- edit modal -->
-    <div class="modal fade" id="modalUserEdit" tabindex="-1" role="dialog" aria-labelledby="labelModalUser"
-        aria-hidden="true">
-        <div class="modal-dialog md" role="form">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleEdit">Edit Data User</h5>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body" id="modalUserEditBody">
-                    <div>
                         @include('users.edit')
                     </div>
                 </div>
@@ -108,8 +90,14 @@
                 },
                 // return the result
                 success: function(result) {
-                    $('#modalAddUser').modal("show");
-                    $('#modalTitle').val("Add New User");
+                    $('#modalUser').modal("show");
+                    $('#btnEditUser').hide();
+                    $('#btnSaveUser').show();
+                    $('#group_lastlogin').hide();
+                    $('#group_createat').hide();
+                    $('#group_password').show();
+                    $('#group_confirmpassword').show();
+                    $('#modalTitle').html("Tambah User Baru");
                     $('#labelModalUser').html(result).show();
                 },
                 complete: function() {
@@ -122,6 +110,32 @@
                 },
                 timeout: 8000
             })
+        });
+    
+        $('#btnSaveUser').click(function (e) {
+            $.ajax({
+                data: $('#formUser').serialize(),
+                url: "{{ route('users.create') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function (results) {
+                    if (results.success === true) {
+                        swal.fire("Sukses!", results.message, "success");
+                        // refresh page after 1 seconds
+                        setTimeout(function(){
+                            $('#formUser').trigger("reset");
+                            $('#modalUser').modal('hide');
+                            // location.reload();
+                        },10000);
+                    } else {
+                        swal.fire("Error!", results.message, "error");
+                    }
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                    $('#btnSaveUser').html('Simpan Perubahan');
+                }
+            });
         });
         </script>
         <script type="text/javascript">
@@ -153,33 +167,91 @@
                 $('body').on('click', '.edit', function () {
                     var id = $(this).data('id');
                     $.get("{{ route('users.edit') }}" +'?id=' + id, function (data) {
-                        $('#modalTitleEdit').html("Edit Data User");
-                        $('#savedata').val("edit-user");
-                        $('#modalUserEdit').modal('show');
-                        $('#nama').val(data.nama);
-                        $('#username').val(data.username);
-                        $('#level').val(data.level_id);
-                        $('#last_login').val(data.last_login);
-                        $('#create_at').val(data.create_at);
+                        $('#modalTitle').html("Edit Data User");
+                        $('#btnSaveUser').val("Edit User");
+                        $('#id').val(data[0].id);
+                        $('#nama').val(data[0].nama);
+                        $('#old_username').val(data[0].username);
+                        $('#username').val(data[0].username);
+                        $('#level').val(data[0].level_id);
+                        $('#last_login').val(data[0].last_login);
+                        $('#group_lastlogin').show();
+                        $('#create_at').val(data[0].create_at);
+                        $('#group_createat').show();
+                        $('#group_password').hide();
+                        $('#group_confirmpassword').hide();
+                        $('#btnEditUser').show();
+                        $('#btnSaveUser').hide();
+                        $('#modalUser').modal('show');
                     })
                 });
-                    
-                $('body').on('click', '.delete', function () {
                 
-                var id = $(this).data("id");
-                confirm("Apakah anda yakin menghapus data ini?");
-            
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('users.delete') }}"+'?id='+id,
-                    success: function (data) {
-                        table.draw();
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
+                $('#btnEditUser').click(function (e) {
+                    $.ajax({
+                        data: $('#formUser').serialize(),
+                        url: "{{ route('users.store') }}",
+                        type: "POST",
+                        dataType: 'json',
+                        success: function (results) {
+                            if (results.success === true) {
+                                swal.fire("Sukses!", results.message, "success");
+                                // refresh page after 1 seconds
+                                setTimeout(function(){
+                                    $('#formUser').trigger("reset");
+                                    $('#modalUser').modal('hide');
+                                    // location.reload();
+                                },10000);
+                            } else {
+                                swal.fire("Error!", results.message, "error");
+                            }
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                            $('#btnEditUser').html('Simpan Perubahan');
+                        }
+                    });
                 });
-            });
+                $('body').on('click', '.delete', function () {                
+                var id = $(this).data("id");
+                swal.fire({
+                    title: "Delete?",
+                    icon: 'question',
+                    text: "Apakah anda yakin akan menghapus data ini?",
+                    type: "warning",
+                    showCancelButton: !0,
+                    confirmButtonText: "Ya, hapus!",
+                    cancelButtonText: "Tidak, batalkan!",
+                    reverseButtons: !0
+                    }).then(function (e) {
+                        if (e.value === true) {
+                            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                            $.ajax({
+                                type: "GET",
+                                url: "{{ route('users.delete') }}"+'?id='+id,
+                                data: {_token: CSRF_TOKEN},
+                                success: function (results) {
+                                    if (results.success === true) {
+                                        swal.fire("Sukses menghapus data!", results.message, "success");
+                                        // refresh page after 2 seconds
+                                        setTimeout(function(){
+                                            table.draw();
+                                        },1000);
+                                    } else {
+                                        swal.fire("Error!", results.message, "error");
+                                    }
+                                },
+                                error: function (data) {
+                                    console.log('Error:', data);
+                                }
+                            });
+                        } else {
+                            e.dismiss;
+                        }
+
+                    }, function (dismiss) {
+                        return false;
+                    })
+                });
             });  
                   
             // function edit(id){

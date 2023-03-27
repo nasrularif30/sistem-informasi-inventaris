@@ -21,6 +21,7 @@
         "sass-loader": "^11.0.1"
     },
     "dependencies": {
-        "laravel-datatables-vite": "^0.5.2"
+        "laravel-datatables-vite": "^0.5.2",
+        "sweetalert2": "^11.7.3"
     }
 }
