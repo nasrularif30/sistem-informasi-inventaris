@@ -58,41 +58,40 @@ class UsersController extends Controller
      */
     public function create(Request $request)
     {
+        $success = false;
+        $message = 'error';
         request()->validate([
             'nama' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:4', 'max:255'],
             'password' => ['required', 'string', 'min:5', 'confirmed'],
-            'level' => ['string'],
-            'id_lokasi' => ['integer']
+            'password_confirmation' => ['required', 'string', 'min:5', 'same:password'],
+            'level' => ['string']
         ]);
-        $success = false;
-        $message = 'error';
-        $data = $request->input();
-			try{
-                $check = DB::select('select * from user_login where username = ?', [request('username')]);
-                if(count($check) > 0){
-                    $message = 'Username telah digunakan';
-                } else{
-                    DB::table('user_login')->insert([
-                        'nama' => request('nama'),
-                        'username' => request('username'),
-                        'password' => Hash::make(request('password')),
-                        'level' => request('level') ?? 5,
-                        'id_lokasi' => request('id_lokasi') ?? 0
-                    ]);
-                    $success = true;
-                    $message = 'User '.request('nama').' berhasil ditambahkan!';
-                }
-			}
-			catch(Exception $e){
-				$message = 'error, '.$e;
-			}
-            
-        //  return response
-            return response()->json([
-                'success' => $success,
-                'message' => $message,
-            ]);
+        try{
+            $check = DB::select('select * from user_login where username = ?', [request('username')]);
+            if(count($check) > 0){
+                $message = 'Username telah digunakan';
+            } else{
+                DB::table('user_login')->insert([
+                    'nama' => request('nama'),
+                    'username' => request('username'),
+                    'password' => Hash::make(request('password')),
+                    'level' => request('level') ?? 5,
+                    'id_lokasi' => request('id_lokasi') ?? 0
+                ]);
+                $success = true;
+                $message = 'User '.request('nama').' berhasil ditambahkan!';
+            }
+        }
+        catch(Exception $e){
+            $message = 'error, '.$e;
+        }
+        
+    //  return response
+        return Response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
         
     }
 
@@ -105,7 +104,7 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'id' => ['integer'],
+            'id_user' => ['integer'],
             'nama' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:4', 'max:255'],
             'old_username' => ['string', 'min:4', 'max:255'],
@@ -114,13 +113,12 @@ class UsersController extends Controller
         ]);
         $success = false;
         $message = 'error';
-        $data = $request->input();
         if(request('username') != request('old_username')){
             $check = DB::select('select * from user_login where username = ?', [request('username')]);
             if(count($check) > 0){
                 $message = 'Username telah digunakan';
             } else{
-                DB::table('user_login')->where('id', request('id'))->update([
+                DB::table('user_login')->where('id', request('id_user'))->update([
                     'nama' => request('nama'),
                     'username' => request('username'),
                     'level' => request('level') ?? 5,
@@ -131,21 +129,23 @@ class UsersController extends Controller
             }
 
         } else{
-            DB::table('user_login')->where('id', request('id'))->update([
-                'nama' => request('nama'),
-                'username' => request('username'),
-                'level' => request('level') ?? 5,
-                'id_lokasi' => request('id_lokasi') ?? 0
-            ]);
+            $store = DB::table('user_login')
+                        ->updateOrInsert(
+                            ['id' => request('id_user')],
+                            ['nama' => request('nama'), 
+                            'username' => request('username'), 
+                            'level' => request('level') ?? 5, 
+                            'id_lokasi' => request('id_lokasi') ?? 0]
+                        );
             $success = true;
             $message = 'User '.request('nama').' berhasil diperbarui!';
         }
             
         //  return response
-            return response()->json([
-                'success' => $success,
-                'message' => $message,
-            ]);
+        return Response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
     }
 
     /**
@@ -184,9 +184,23 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $success = false;
+        $message = '';
+        try {
+            DB::table('user_login')->where('id', request('id_user'))->update([
+                'password' => Hash::make(request('password'))
+            ]);
+            $success = true;
+            $message = 'Berhasil mengubah password';
+        } catch (Exception $e) {
+            $message = 'error, '.$e;
+        }
+        return Response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
     }
 
     /**

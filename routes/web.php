@@ -32,6 +32,7 @@ Route::get('users', [UsersController::class, 'index'])->name('users');
 Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list');
 Route::post('users/create', [UsersController::class, 'create'])->name('users.create');
 Route::post('users/store', [UsersController::class, 'store'])->name('users.store');
+Route::post('users/update', [UsersController::class, 'update'])->name('users.update');
 Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit');
 Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete');
 

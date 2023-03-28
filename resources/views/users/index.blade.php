@@ -78,66 +78,6 @@
         </div>
     </div>
     @stack('scripts')
-    <script  type="text/javascript" >
-        // display a modal
-        $(document).on('click', '#addUser', function(event) {
-            event.preventDefault();
-            let href = $(this).attr('data-attr');
-            $.ajax({
-                url: href,
-                beforeSend: function() {
-                    $('#loader').show();
-                },
-                // return the result
-                success: function(result) {
-                    $('#modalUser').modal("show");
-                    $('#btnEditUser').hide();
-                    $('#btnSaveUser').show();
-                    $('#group_lastlogin').hide();
-                    $('#group_createat').hide();
-                    $('#group_password').show();
-                    $('#group_confirmpassword').show();
-                    $('#modalTitle').html("Tambah User Baru");
-                    $('#labelModalUser').html(result).show();
-                },
-                complete: function() {
-                    $('#loader').hide();
-                },
-                error: function(jqXHR, testStatus, error) {
-                    console.log(error);
-                    alert("Page " + href + " cannot open. Error:" + error);
-                    $('#loader').hide();
-                },
-                timeout: 8000
-            })
-        });
-    
-        $('#btnSaveUser').click(function (e) {
-            $.ajax({
-                data: $('#formUser').serialize(),
-                url: "{{ route('users.create') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function (results) {
-                    if (results.success === true) {
-                        swal.fire("Sukses!", results.message, "success");
-                        // refresh page after 1 seconds
-                        setTimeout(function(){
-                            $('#formUser').trigger("reset");
-                            $('#modalUser').modal('hide');
-                            // location.reload();
-                        },10000);
-                    } else {
-                        swal.fire("Error!", results.message, "error");
-                    }
-                },
-                error: function (data) {
-                    console.log('Error:', data);
-                    $('#btnSaveUser').html('Simpan Perubahan');
-                }
-            });
-        });
-        </script>
         <script type="text/javascript">
             $(function () {
                 $.ajaxSetup({
@@ -169,7 +109,7 @@
                     $.get("{{ route('users.edit') }}" +'?id=' + id, function (data) {
                         $('#modalTitle').html("Edit Data User");
                         $('#btnSaveUser').val("Edit User");
-                        $('#id').val(data[0].id);
+                        $('#id_user').val(id);
                         $('#nama').val(data[0].nama);
                         $('#old_username').val(data[0].username);
                         $('#username').val(data[0].username);
@@ -183,33 +123,26 @@
                         $('#btnEditUser').show();
                         $('#btnSaveUser').hide();
                         $('#modalUser').modal('show');
+                        $('#btnEditUser').html('Simpan');
                     })
                 });
-                
-                $('#btnEditUser').click(function (e) {
-                    $.ajax({
-                        data: $('#formUser').serialize(),
-                        url: "{{ route('users.store') }}",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (results) {
-                            if (results.success === true) {
-                                swal.fire("Sukses!", results.message, "success");
-                                // refresh page after 1 seconds
-                                setTimeout(function(){
-                                    $('#formUser').trigger("reset");
-                                    $('#modalUser').modal('hide');
-                                    // location.reload();
-                                },10000);
-                            } else {
-                                swal.fire("Error!", results.message, "error");
-                            }
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                            $('#btnEditUser').html('Simpan Perubahan');
-                        }
-                    });
+                $('body').on('click', '.changepass', function () {
+                    var id = $(this).data('id');
+                    $.get("{{ route('users.edit') }}" +'?id=' + id, function (data) {
+                        $('#modalTitle').html("Ubah Password <b>"+data[0].username+"</b>");
+                        $('#id_user').val(id);
+                        $('#group_lastlogin').hide();
+                        $('#group_createat').hide();
+                        $('#group_password').show();
+                        $('#group_confirmpassword').show();
+                        $('#group_nama').hide();
+                        $('#group_username').hide();
+                        $('#group_level').hide();
+                        $('#btnEditUser').hide();
+                        $('#btnSaveUser').hide();
+                        $('#modalUser').modal('show');
+                        $('#btnChangePass').html('Simpan');
+                    })
                 });
                 $('body').on('click', '.delete', function () {                
                 var id = $(this).data("id");
@@ -252,30 +185,180 @@
                         return false;
                     })
                 });
+                // display a modal
+                $(document).on('click', '#addUser', function(event) {
+                    event.preventDefault();
+                    let href = $(this).attr('data-attr');
+                    $.ajax({
+                        url: href,
+                        beforeSend: function() {
+                            $('#loader').show();
+                        },
+                        // return the result
+                        success: function(result) {
+                            $('#modalUser').modal("show");
+                            $('#btnEditUser').hide();
+                            $('#btnSaveUser').show();
+                            $('#group_lastlogin').hide();
+                            $('#group_createat').hide();
+                            $('#group_password').show();
+                            $('#group_confirmpassword').show();
+                            $('#modalTitle').html("Tambah User Baru");
+                            $('#labelModalUser').html(result).show();
+                            $('#btnSaveUser').html('Simpan');
+                        },
+                        complete: function() {
+                            $('#loader').hide();
+                        },
+                        error: function(jqXHR, testStatus, error) {
+                            console.log(error);
+                            alert("Page " + href + " cannot open. Error:" + error);
+                            $('#loader').hide();
+                        },
+                        timeout: 8000
+                    })
+                });
+                
+                $('#btnSaveUser').click(function (e) {
+                    e.preventDefault();
+                    if($('#nama').val() == "" || $('#username').val() == "" || $('#password').val() == "" || $('#confirm-password').val() == ""){
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Data tidak boleh kosong',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else{
+                        var password = $('#password').val();
+                        var confirmpassword = $('#password-confirm').val();
+                        if(password != confirmpassword){
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Password tidak cocok',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }else{
+                            $.ajax({
+                                data: $('#formUser').serialize(),
+                                url: "{{ route('users.create') }}",
+                                type: "POST",
+                                dataType: 'json',
+                                success: function (results) {
+                                    if (results.success === true) {
+                                        swal.fire("Sukses!", results.message, "success");
+                                        // refresh page after 1 seconds
+                                        setTimeout(function(){
+                                            $('#formUser').trigger("reset");
+                                            $('#modalUser').modal('hide');
+                                            table.draw()
+                                            location.reload();
+                                        },1000);
+                                    } else {
+                                        swal.fire("Error!", results.message, "error");
+                                    }
+                                },
+                                error: function (data) {
+                                    console.log('Error:', data);
+                                    $('#btnSaveUser').html('Simpan Perubahan');
+                                }
+                            });
+                        }
+                    }                    
+                });
+                        
+                $('#btnEditUser').click(function (e) {
+                    e.preventDefault();
+                    if($('#nama').val() == "" || $('#username').val() == ""){
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Data tidak boleh kosong',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else{
+                        $.ajax({
+                            url: "{{ url('users/store') }}",
+                            type: "POST",
+                            data: $('#formUser').serialize(),
+                            dataType: 'json',
+                            success: function (results) {
+                                if (results.success === true) {
+                                    swal.fire("Sukses!", results.message, "success");
+                                    // refresh page after 1 seconds
+                                    setTimeout(function(){
+                                        $('#formUser').trigger("reset");
+                                        $('#modalUser').modal('hide');
+                                        table.draw()
+                                        // location.reload();
+                                    },1000);
+                                } else {
+                                    swal.fire("Error!", results.message, "error");
+                                }
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                                $('#btnEditUser').html('Simpan Perubahan');
+                            }
+                        });
+                    }
+                });
+                        
+                $('#btnChangePass').click(function (e) {
+                    e.preventDefault();
+                    if($('#password').val() == "" || $('#password-confirm').val() == ""){
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Data tidak boleh kosong',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else{
+                        var password = $('#password').val();
+                        var confirmpassword = $('#password-confirm').val();
+                        if(password != confirmpassword){
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Password tidak cocok',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }else{
+                            $.ajax({
+                                url: "{{ url('users/update') }}",
+                                type: "POST",
+                                data: $('#formUser').serialize(),
+                                dataType: 'json',
+                                success: function (results) {
+                                    if (results.success === true) {
+                                        swal.fire("Sukses!", results.message, "success");
+                                        // refresh page after 1 seconds
+                                        setTimeout(function(){
+                                            $('#formUser').trigger("reset");
+                                            $('#modalUser').modal('hide');
+                                            table.draw()
+                                            // location.reload();
+                                        },1000);
+                                    } else {
+                                        swal.fire("Error!", results.message, "error");
+                                    }
+                                },
+                                error: function (data) {
+                                    console.log('Error:', data);
+                                    $('#btnChangePass').html('Simpan Perubahan');
+                                }
+                            });
+                        }
+                        
+                    }
+                });
             });  
-                  
-            // function edit(id){
-            // $.ajaxSetup({
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     }
-            //     });
-            //     $.ajax({
-            //     type:"POST",
-            //     url: "{{ route('users.edit') }}",
-            //     data: { id: id },
-            //     dataType: 'json',
-            //     success: function(res){
-            //             $('#modalTitle').html("Edit User");
-            //             $('#modalUserBody').modal('show');
-            //         //   $('#user_id').val(res.id);
-            //             $('#nama').val(res.nama);
-            //             $('#username').val(res.username);
-            //             $('#level').val(res.level_id);
-            //         //   $('#last_login').val(res.last_login);
-            //         //   $('#create_at').val(res.create_at);
-            //         }
-            //     });
-            // }
     </script>
+    <script  type="text/javascript" >
+        </script>
         @endsection
