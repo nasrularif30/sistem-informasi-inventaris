@@ -21,11 +21,11 @@ class UsersController extends Controller
 
     public function getAllUsers(Request $request)
     {   
-             
         if ($request->ajax()) {
             $data = DB::table('user_login')
                         ->join('user_level', 'user_login.level', '=', 'user_level.id')
-                        ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
+                        // ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
+                        ->select('user_login.*', 'user_level.level')
                         ->get();
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -60,7 +60,7 @@ class UsersController extends Controller
     {
         $success = false;
         $message = 'error';
-        request()->validate([
+        $validate = request()->validate([
             'nama' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:4', 'max:255'],
             'password' => ['required', 'string', 'min:5', 'confirmed'],

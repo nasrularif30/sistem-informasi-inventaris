@@ -24,7 +24,7 @@
                     </span>
                   </a>
                 </li>
-                <li class="nav-item {{ Request::segment(1) === 'inventaris' ? 'active' : null }}">
+                <li class="nav-item {{ Request::segment(1) === 'peminjaman' ? 'active' : null }}">
                   <a class="nav-link" href="./" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                     <i class="ti ti-box-seam"></i>

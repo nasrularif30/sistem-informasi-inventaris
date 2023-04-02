@@ -198,6 +198,7 @@
                         success: function(result) {
                             $('#modalUser').modal("show");
                             $('#btnEditUser').hide();
+                            $('#btnChangePass').hide();
                             $('#btnSaveUser').show();
                             $('#group_lastlogin').hide();
                             $('#group_createat').hide();
@@ -221,6 +222,9 @@
                 
                 $('#btnSaveUser').click(function (e) {
                     e.preventDefault();
+                    var password = $('#password').val();
+                    var confirmpassword = $('#password-confirm').val();
+                    var username = $('#username').val();
                     if($('#nama').val() == "" || $('#username').val() == "" || $('#password').val() == "" || $('#confirm-password').val() == ""){
                         Swal.fire({
                             position: 'top-end',
@@ -230,8 +234,6 @@
                             timer: 1500
                         })
                     } else{
-                        var password = $('#password').val();
-                        var confirmpassword = $('#password-confirm').val();
                         if(password != confirmpassword){
                             Swal.fire({
                                 position: 'top-end',
@@ -241,30 +243,50 @@
                                 timer: 1500
                             })
                         }else{
-                            $.ajax({
-                                data: $('#formUser').serialize(),
-                                url: "{{ route('users.create') }}",
-                                type: "POST",
-                                dataType: 'json',
-                                success: function (results) {
-                                    if (results.success === true) {
-                                        swal.fire("Sukses!", results.message, "success");
-                                        // refresh page after 1 seconds
-                                        setTimeout(function(){
-                                            $('#formUser').trigger("reset");
-                                            $('#modalUser').modal('hide');
-                                            table.draw()
-                                            location.reload();
-                                        },1000);
-                                    } else {
-                                        swal.fire("Error!", results.message, "error");
+                            if(username.length < 4){
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: 'Username harus lebih dari 3 karakter',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            else if(password.length < 5){
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: 'Password harus lebih dari 4 karakter',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            else{
+                                $.ajax({
+                                    data: $('#formUser').serialize(),
+                                    url: "{{ route('users.create') }}",
+                                    type: "POST",
+                                    dataType: 'json',
+                                    success: function (results) {
+                                        if (results.success === true) {
+                                            swal.fire("Sukses!", results.message, "success");
+                                            // refresh page after 1 seconds
+                                            setTimeout(function(){
+                                                $('#formUser').trigger("reset");
+                                                $('#modalUser').modal('hide');
+                                                table.draw()
+                                                location.reload();
+                                            },1000);
+                                        } else {
+                                            swal.fire("Error!", results.message, "error");
+                                        }
+                                    },
+                                    error: function (data) {
+                                        console.log('Error:', data);
+                                        $('#btnSaveUser').html('Simpan Perubahan');
                                     }
-                                },
-                                error: function (data) {
-                                    console.log('Error:', data);
-                                    $('#btnSaveUser').html('Simpan Perubahan');
-                                }
-                            });
+                                });
+                            }
                         }
                     }                    
                 });
