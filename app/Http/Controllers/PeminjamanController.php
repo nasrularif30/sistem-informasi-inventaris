@@ -15,7 +15,12 @@ class PeminjamanController extends Controller
      */
     public function index(Request $request)
     {
-        return view('peminjaman.index');
+        $data_peminjam = DB::table('warga')->get()->toArray();
+        $data_barang = DB::table('inventaris')->get()->toArray();
+
+        return view('peminjaman.index', ['data_barang'=>$data_barang,
+                                                'data_peminjam'=>$data_peminjam]);
+        // return view('peminjaman.index');
     }
 
     public function getAllPeminjaman(Request $request){
@@ -118,9 +123,15 @@ class PeminjamanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $id_barang = request('id_barang') ?? 0;
+        $id_peminjaman = request('id_peminjaman') ?? 0;
+        $data_peminjam = DB::table('warga')->get()->toArray();
+        $data_barang = DB::table('inventaris')->get()->toArray();
+
+        return view('peminjaman.create', compact(['data_barang'=>$data_barang,
+                                    'data_peminjam'=>$data_peminjam]));
     }
 
     /**

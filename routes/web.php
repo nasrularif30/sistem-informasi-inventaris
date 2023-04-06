@@ -40,6 +40,7 @@ Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.del
 Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
 Route::get('peminjaman/list', [PeminjamanController::class, 'getAllPeminjaman'])->name('peminjaman.list');
 Route::post('peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
+Route::get('peminjaman/show', [PeminjamanController::class, 'show'])->name('peminjaman.show');
 Route::post('peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
 Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name('peminjaman.update');
 Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');

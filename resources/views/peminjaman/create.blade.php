@@ -1,37 +1,44 @@
 <div class="col-md-12">
     <form id="formBarang" name="formBarang" class="form">
         @csrf
+        <div class="row mb-3" id="group_nama_peminjam">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Nama Peminjam</label>
+            <div class="col-md-6">
+                  <select class="form-select select2" name="nama_peminjam" id="nama_peminjam" placeholder="pilih nama peminjam">
+                        <option selected disabled>Pilih nama peminjam</option>
+                    @foreach($data_peminjam as $warga)
+                        <option value="{{$warga->id}}">{{$warga->nama_lengkap}}</option>
+                    @endforeach
+                  </select>
+            </div>
+        </div>
         <div class="row mb-3" id="group_nama">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Nama Barang</label>
             <div class="col-md-6">
-                <input id="id_barang" name="id_barang" type="hidden" class="form-control" value="">
-                <input id="nama" type="text" class="form-control" name="nama" value="" required autofocus>
-            </div>
-        </div>
-        <div class="row mb-3" id="group_kode">
-            <label for="nama" class="col-md-4 col-form-label text-md-end">Kode Barang</label>
-            <div class="col-md-6">
-                <input id="old_kode" type="text" class="form-control" name="old_kode" value="" hidden>
-                <input id="kode" type="text" class="form-control" name="kode" value="" required autofocus>
-            </div>
-        </div>
-        <div class="row mb-3" id="group_status">
-            <label class="col-md-4 col-form-label text-md-end">Status</label>
-            <div class="col-md-6">
-                <select class="form-select" id="status" name="status">
-                    <option value="1" selected>Ada</option>
-                    <option value="0">Tidak Ada</option>
+                <select class="form-select select2" name="nama_barang" id="nama_barang" placeholder="pilih nama barang">
+                    <option selected disabled>Pilih nama barang</option>
+                @foreach($data_barang as $barang)
+                    <option value="{{$barang->id}}">{{$barang->nama}}</option>
+                @endforeach
                 </select>
             </div>
         </div>
-        <div class="row mb-3" id="group_kondisi">
-            <label class="col-md-4 col-form-label text-md-end">Kondisi</label>
-            <div class="col-md-6">
-                <select class="form-select" id="kondisi" name="kondisi">
-                    <option value="Baik" selected>Baik</option>
-                    <option value="Cukup">Cukup Baik</option>
-                    <option value="Rusak">Rusak</option>
-                </select>
+        <div class="row mb-3" id="group_jumlah">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Jumlah barang</label>
+            <div class="col-md-6 input-icon">
+                <input class="form-control " placeholder="jumlah barang" id="jumlah" type="number">
+            </div>
+        </div>
+        <div class="row mb-3" id="group_tanggal_pinjam">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Tanggal pinjam</label>
+            <div class="col-md-6 input-icon">
+                <input class="form-control " placeholder="tanggal peminjaman" id="tgl_pinjam" type="date">
+            </div>
+        </div>
+        <div class="row mb-3" id="group_tanggal_kembali">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Tanggal kembali</label>
+            <div class="col-md-6 input-icon">
+                <input class="form-control " placeholder="tanggal kembali" id="tgl_kembali" type="date">
             </div>
         </div>
         <div class="row mb-0">

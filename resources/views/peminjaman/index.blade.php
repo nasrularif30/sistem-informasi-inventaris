@@ -85,7 +85,7 @@
             </div>
         </div>
     </div>
-    <!-- register modal -->
+    <!-- peminjaman modal -->
     <div class="modal fade" id="modalPeminjaman" tabindex="-1" role="dialog" aria-labelledby="labelModalPeminjaman"
         aria-hidden="true">
         <div class="modal-dialog md" role="form">
@@ -221,6 +221,7 @@
                     let href = $(this).attr('data-attr');
                     $.ajax({
                         url: href,
+                        method: "GET",
                         beforeSend: function() {
                             $('#loader').show();
                         },
@@ -256,6 +257,12 @@
                             $('#modalPeminjaman').modal("show");
                             $('#modalTitle').html("Input Peminjaman Baru");
                             $('#labelModalPeminjaman').html(result).show();
+                            $('.select2').select2( {
+                                theme: "bootstrap-5",
+                                width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+                                placeholder: $( this ).data( 'placeholder' ),
+                                dropdownParent: $("#modalPeminjaman")
+                            });
                         },
                         complete: function() {
                             $('#loader').hide();
