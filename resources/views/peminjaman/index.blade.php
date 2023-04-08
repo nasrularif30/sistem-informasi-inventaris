@@ -35,7 +35,34 @@
                         <i class="ti ti-plus"></i>
                         Peminjaman
                     </button>
-                    <button id="addBarang" name="addBarang" type="button" class="btn btn-square btn-secondary ms-1" data-bs-toggle="modal" data-bs-target="#modalBarang">
+                    </div>
+                    <div class="card-body border-bottom py-3">
+                        <div class="table-responsive">
+                            <table class="table table-striped card-table table-vcenter text-nowrap datatable table-peminjaman" id="tablePeminjaman" style="width:100%">
+                                <thead class="my-1">
+                                    <tr>
+                                        <th class="w-1">No</th>
+                                        <th>Nama<br>Barang</th>
+                                        <th>Nama<br>Peminjam</th>
+                                        <th>Jumlah<br>Barang</th>
+                                        <th>Status</th>
+                                        <th>Tanggal pinjam</th>
+                                        <th>Tanggal kembali</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                    <h3 class="card-title">Data barang</h3>
+                    <button id="addBarang" name="addBarang" type="button" class="btn btn-square btn-secondary ms-auto" data-bs-toggle="modal" data-bs-target="#modalBarang">
                         <i class="ti ti-plus"></i>
                         Barang
                     </button>
@@ -46,14 +73,11 @@
                                 <thead class="my-1">
                                     <tr>
                                         <th class="w-1">No</th>
-                                        <th>Nama</th>
-                                        <th>Kode</th>
-                                        <th>Jumlah<br>barang</th>
+                                        <th>Nama<br>Barang</th>
+                                        <th>Kode<br>Barang</th>
                                         <th>Status</th>
+                                        <th>Ketersediaan</th>
                                         <th>Kondisi</th>
-                                        <!-- <th>Nama Peminjam</th> -->
-                                        <th>Tanggal pinjam</th>
-                                        <th>Tanggal kembali</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -73,7 +97,7 @@
         <div class="modal-dialog md" role="form">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleBarang">Tambah Barang Baru</h5>
+                    <h5 class="modal-title" id="modalTitleBarang">Tambah Inventaris Baru</h5>
                     <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
@@ -111,7 +135,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                var table = $('.table-barang').DataTable({
+
+                var tablePeminjaman = $('.table-peminjaman').DataTable({
                     processing: true,
                     serverSide: true,
                     paging: true,
@@ -119,11 +144,11 @@
                     columns: [
                         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                         {data: 'nama_barang', name: 'nama_barang'},
-                        {data: 'kode', name: 'kode'},
-                        {data: 'jumlah_barang', name: 'jumlah_barang'},
+                        {data: 'nama_peminjam', name: 'nama_peminjam'},
+                        // {data: 'kode', name: 'kode'},
+                        {data: 'jumlah', name: 'jumlah_peminjaman'},
                         {data: 'status', name: 'status'},
-                        {data: 'kondisi', name: 'kondisi'},
-                        // {data: 'nama_peminjam', name: 'nama_peminjam'},
+                        // {data: 'kondisi', name: 'kondisi'},
                         {data: 'tanggal_pinjam', name: 'tanggal_pinjam'},
                         {data: 'tanggal_kembali', name: 'tanggal_kembali'},
                         {
@@ -134,48 +159,52 @@
                         },
                     ]
                 }); 
+                var tableBarang = $('.table-barang').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    paging: true,
+                    ajax: "{{ route('peminjaman.inventaris') }}",
+                    columns: [
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                        {data: 'nama', name: 'nama_barang'},
+                        {data: 'kode', name: 'kode'},
+                        {data: 'status', name: 'status'},
+                        {data: 'ketersediaan', name: 'ketersediaan'},
+                        {data: 'kondisi', name: 'kondisi'},
+                        {
+                            data: 'action', 
+                            name: 'action', 
+                            orderable: false, 
+                            searchable: false
+                        },
+                    ]
+                }); 
                 $('body').on('click', '.edit', function () {
                     var id = $(this).data('id');
-                    $.get("{{ route('peminjaman.edit') }}" +'?id=' + id, function (data) {
-                        $('#modalTitle').html("Edit Data Barang");
-                        $('#btnSaveBarang').val("Edit Barang");
-                        $('#id_Barang').val(id);
-                        $('#nama').val(data[0].nama);
-                        $('#old_Barangname').val(data[0].Barangname);
-                        $('#Barangname').val(data[0].Barangname);
-                        $('#level').val(data[0].level_id);
-                        $('#last_login').val(data[0].last_login);
-                        $('#group_lastlogin').show();
-                        $('#create_at').val(data[0].create_at);
-                        $('#group_createat').show();
-                        $('#group_password').hide();
-                        $('#group_confirmpassword').hide();
-                        $('#btnEditBarang').show();
-                        $('#btnSaveBarang').hide();
-                        $('#modalBarang').modal('show');
-                        $('#btnEditBarang').html('Simpan');
-                    })
-                });
-                $('body').on('click', '.changepass', function () {
-                    var id = $(this).data('id');
-                    $.get("{{ route('peminjaman.edit') }}" +'?id=' + id, function (data) {
-                        $('#modalTitle').html("Ubah Password <b>"+data[0].Barangname+"</b>");
-                        $('#id_Barang').val(id);
-                        $('#group_lastlogin').hide();
-                        $('#group_createat').hide();
-                        $('#group_password').show();
-                        $('#group_confirmpassword').show();
-                        $('#group_nama').hide();
-                        $('#group_Barangname').hide();
-                        $('#group_level').hide();
-                        $('#btnEditBarang').hide();
-                        $('#btnSaveBarang').hide();
-                        $('#modalBarang').modal('show');
-                        $('#btnChangePass').html('Simpan');
+                    var param = 'peminjaman'
+                    $.get("{{ route('peminjaman.edit') }}" +'?id=' + id + '&param=peminjaman', function (data) {
+                        $('#modalTitle').html("Edit Data Peminjaman");
+                        $('#btnSavePinjam').html("Update");
+                        $('#id_peminjaman').val(data[0].id);
+                        $('#id_peminjam').val(data[0].id_peminjam);
+                        $('#id_barang_peminjaman').val(data[0].id_barang);
+                        $("#nama_barang_peminjaman").val(data[0].id_barang);
+                        $("#nama_barang_peminjaman").prop('disabled', true);
+                        $('#nama_peminjam').val(data[0].id_peminjam);
+                        $('#nama_peminjam').prop('disabled', true);
+                        $('#jumlah_peminjaman').val(data[0].jumlah);
+                        $('#jml_peminjaman').val(data[0].jumlah);
+                        $('#jumlah_peminjaman').prop('disabled', true);
+                        $('#tgl_peminjaman').val(data[0].tanggal_pinjam);
+                        $('#tgl_kembali').val(data[0].tanggal_kembali);
+                        $('#status_peminjaman').val(data[0].status_peminjaman);
+                        data[0].status_peminjaman == 2 ? $("#status_peminjaman").prop('disabled', true) : $("#status_peminjaman").prop('disabled', false);
+                        $('#modalPeminjaman').modal('show');
                     })
                 });
                 $('body').on('click', '.delete', function () {                
                 var id = $(this).data("id");
+                var param = $(this).data("param");
                 swal.fire({
                     title: "Delete?",
                     icon: 'question',
@@ -190,14 +219,15 @@
                             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                             $.ajax({
                                 type: "GET",
-                                url: "{{ route('peminjaman.delete') }}"+'?id='+id,
+                                url: "{{ route('peminjaman.delete') }}"+'?id='+ id + '&param=' + param,
                                 data: {_token: CSRF_TOKEN},
                                 success: function (results) {
                                     if (results.success === true) {
                                         swal.fire("Sukses menghapus data!", results.message, "success");
                                         // refresh page after 2 seconds
                                         setTimeout(function(){
-                                            table.draw();
+                                            tablePeminjaman.draw()
+                                            tableBarang.draw()
                                         },1000);
                                     } else {
                                         swal.fire("Error!", results.message, "error");
@@ -215,6 +245,22 @@
                         return false;
                     })
                 });
+                $('body').on('click', '.editBarang', function () {
+                    var id = $(this).data('id');
+                    var param = 'barang';
+                    $.get("{{ route('peminjaman.edit') }}" +'?id=' + id + '&param=barang', function (data) {
+                        $('#modalTitleBarang').html("Edit Data Inventaris");
+                        $('#btnSaveBarang').html("Update");
+                        $('#id_barang').val(data[0].id);
+                        $("#nama_barang").val(data[0].nama);
+                        $('#kode').val(data[0].kode);
+                        $('#total_stok').val(data[0].total_stok);
+                        $('#kondisi').val(data[0].kondisi);
+                        $('#status').val(data[0].status);
+                        $('#status').prop('disabled', true);
+                        $('#modalBarang').modal('show');
+                    })
+                });
                 // display a modal
                 $(document).on('click', '#addBarang', function(event) {
                     event.preventDefault();
@@ -228,7 +274,10 @@
                         // return the result
                         success: function(result) {
                             $('#modalBarang').modal("show");
-                            $('#modalTitle').html("Tambah Barang Baru");
+                            $('#btnSaveBarang').html('Simpan');
+                            $('#modalTitleBarang').html("Tambah Barang Baru");
+                            $('#formBarang').trigger("reset");
+                            $('#id_peminjaman').val('');
                             $('#labelModalBarang').html(result).show();
                         },
                         complete: function() {
@@ -257,6 +306,15 @@
                             $('#modalPeminjaman').modal("show");
                             $('#modalTitle').html("Input Peminjaman Baru");
                             $('#labelModalPeminjaman').html(result).show();
+                            $('#jumlah_peminjaman').prop('disabled', false);
+                            $('#nama_peminjam').prop('disabled', false);
+                            $("#nama_barang_peminjaman").prop('disabled', false);
+                            $("#status_peminjaman").prop('disabled', false);
+                            $('#btnSavePinjam').html('Simpan');
+                            $('#formPeminjaman').trigger("reset");
+                            $('#jumlah').attr({
+                                "min" : 1
+                            })
                             $('.select2').select2( {
                                 theme: "bootstrap-5",
                                 width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
@@ -310,7 +368,8 @@
                                         setTimeout(function(){
                                             $('#formBarang').trigger("reset");
                                             $('#modalBarang').modal('hide');
-                                            table.draw()
+                                            tablePeminjaman.draw()
+                                            tableBarang.draw()
                                         },1000);
                                     } else {
                                         swal.fire("Error!", results.message, "error");
@@ -349,7 +408,8 @@
                                     setTimeout(function(){
                                         $('#formBarang').trigger("reset");
                                         $('#modalBarang').modal('hide');
-                                        table.draw()
+                                        tablePeminjaman.draw()
+                                        tableBarang.draw()
                                         // location.reload();
                                     },1000);
                                 } else {
@@ -364,55 +424,55 @@
                     }
                 });
                         
-                $('#btnChangePass').click(function (e) {
+                $('#btnSavePinjam').click(function (e) {
                     e.preventDefault();
-                    if($('#password').val() == "" || $('#password-confirm').val() == ""){
+                    var kode = $('#kode').val();
+                    if($('#nama_peminjam').val() == "" || $('#nama_barang_peminjaman').val() == "" || $('#jumlah').val() == ""  || $('#tgl_pinjam').val() == "" || $('#tgl_kembali').val() == ""){
                         Swal.fire({
                             position: 'top-end',
-                            icon: 'error',
+                            icon: 'warning',
                             title: 'Data tidak boleh kosong',
                             showConfirmButton: false,
                             timer: 1500
                         })
                     } else{
-                        var password = $('#password').val();
-                        var confirmpassword = $('#password-confirm').val();
-                        if(password != confirmpassword){
+                        if($('#jumlah').val() < 1){
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'error',
-                                title: 'Password tidak cocok',
+                                title: 'Masukkan jumlah barang dengan benar!',
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                        }else{
+                        }
+                        else{
                             $.ajax({
-                                url: "{{ url('peminjaman/update') }}",
+                                data: $('#formPeminjaman').serialize(),
+                                url: "{{ route('peminjaman.create') }}",
                                 type: "POST",
-                                data: $('#formBarang').serialize(),
                                 dataType: 'json',
                                 success: function (results) {
                                     if (results.success === true) {
                                         swal.fire("Sukses!", results.message, "success");
                                         // refresh page after 1 seconds
                                         setTimeout(function(){
-                                            $('#formBarang').trigger("reset");
-                                            $('#modalBarang').modal('hide');
-                                            table.draw()
-                                            // location.reload();
-                                        },1000);
+                                            $('#formPeminjaman').trigger("reset");
+                                            $('#modalPeminjaman').modal('hide');
+                                            tablePeminjaman.draw()
+                                            tableBarang.draw()
+                                        },1500);
                                     } else {
                                         swal.fire("Error!", results.message, "error");
                                     }
                                 },
                                 error: function (data) {
                                     console.log('Error:', data);
-                                    $('#btnChangePass').html('Simpan Perubahan');
+                                    $('#btnSavePeminjaman').html('Simpan Perubahan');
                                 }
                             });
+                            
                         }
-                        
-                    }
+                    }    
                 });
             });  
     </script>
