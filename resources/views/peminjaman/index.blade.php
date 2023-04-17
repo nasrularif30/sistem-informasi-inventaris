@@ -74,7 +74,7 @@
                                     <tr>
                                         <th class="w-1">No</th>
                                         <th>Nama<br>Barang</th>
-                                        <th>Kode<br>Barang</th>
+                                        <th>Spesifikasi<br>Barang</th>
                                         <th>Status</th>
                                         <th>Ketersediaan</th>
                                         <th>Kondisi</th>
@@ -166,8 +166,8 @@
                     ajax: "{{ route('peminjaman.inventaris') }}",
                     columns: [
                         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                        {data: 'nama', name: 'nama_barang'},
-                        {data: 'kode', name: 'kode'},
+                        {data: 'nama', name: 'nama'},
+                        {data: 'spek', name: 'spek'},
                         {data: 'status', name: 'status'},
                         {data: 'ketersediaan', name: 'ketersediaan'},
                         {data: 'kondisi', name: 'kondisi'},
@@ -277,7 +277,7 @@
                             $('#btnSaveBarang').html('Simpan');
                             $('#modalTitleBarang').html("Tambah Barang Baru");
                             $('#formBarang').trigger("reset");
-                            $('#id_peminjaman').val('');
+                            $('#id_barang').val('');
                             $('#labelModalBarang').html(result).show();
                         },
                         complete: function() {
@@ -311,6 +311,7 @@
                             $("#nama_barang_peminjaman").prop('disabled', false);
                             $("#status_peminjaman").prop('disabled', false);
                             $('#btnSavePinjam').html('Simpan');
+                            $('#id_peminjaman').val('');
                             $('#formPeminjaman').trigger("reset");
                             $('#jumlah').attr({
                                 "min" : 1
@@ -336,8 +337,7 @@
 
                 $('#btnSaveBarang').click(function (e) {
                     e.preventDefault();
-                    var kode = $('#kode').val();
-                    if($('#nama_barang').val() == "" || $('#kode').val() == "" || $('#jumlah').val() == "" ){
+                    if($('#nama_barang').val() == "" || $('#spek').val() == "" || $('#jumlah').val() == "" ){
                         Swal.fire({
                             position: 'top-end',
                             icon: 'warning',
@@ -346,48 +346,36 @@
                             timer: 1500
                         })
                     } else{
-                        if(kode.length < 3){
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Kode barang harus lebih dari 2 karakter',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }
-                        else{
-                            $.ajax({
-                                data: $('#formBarang').serialize(),
-                                url: "{{ route('peminjaman.create') }}",
-                                type: "POST",
-                                dataType: 'json',
-                                success: function (results) {
-                                    if (results.success === true) {
-                                        swal.fire("Sukses!", results.message, "success");
-                                        // refresh page after 1 seconds
-                                        setTimeout(function(){
-                                            $('#formBarang').trigger("reset");
-                                            $('#modalBarang').modal('hide');
-                                            tablePeminjaman.draw()
-                                            tableBarang.draw()
-                                        },1000);
-                                    } else {
-                                        swal.fire("Error!", results.message, "error");
-                                    }
-                                },
-                                error: function (data) {
-                                    console.log('Error:', data);
-                                    $('#btnSaveBarang').html('Simpan Perubahan');
+                        $.ajax({
+                            data: $('#formBarang').serialize(),
+                            url: "{{ route('peminjaman.create') }}",
+                            type: "POST",
+                            dataType: 'json',
+                            success: function (results) {
+                                if (results.success === true) {
+                                    swal.fire("Sukses!", results.message, "success");
+                                    // refresh page after 1 seconds
+                                    setTimeout(function(){
+                                        $('#formBarang').trigger("reset");
+                                        $('#modalBarang').modal('hide');
+                                        tablePeminjaman.draw()
+                                        tableBarang.draw()
+                                    },1000);
+                                } else {
+                                    swal.fire("Error!", results.message, "error");
                                 }
-                            });
-                            
-                        }
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                                $('#btnSaveBarang').html('Simpan Perubahan');
+                            }
+                        });
                     }                    
                 });
                         
                 $('#btnEditBarang').click(function (e) {
                     e.preventDefault();
-                    if($('#nama').val() == "" || $('#Barangname').val() == ""){
+                    if($('#nama').val() == "" || $('#spek').val() == ""){
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
@@ -426,7 +414,6 @@
                         
                 $('#btnSavePinjam').click(function (e) {
                     e.preventDefault();
-                    var kode = $('#kode').val();
                     if($('#nama_peminjam').val() == "" || $('#nama_barang_peminjaman').val() == "" || $('#jumlah').val() == ""  || $('#tgl_pinjam').val() == "" || $('#tgl_kembali').val() == ""){
                         Swal.fire({
                             position: 'top-end',

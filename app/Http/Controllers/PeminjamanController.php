@@ -67,7 +67,7 @@ class PeminjamanController extends Controller
         if ($request->ajax()) {
             $data = DB::table('inventaris AS i')
                     ->leftJoin('peminjaman AS p', 'i.id', '=', 'p.id_barang')
-                    ->select('i.id', 'i.kode', 'i.nama', 'i.kategori', 'i.total_stok', 'i.kondisi',
+                    ->select('i.id', 'i.kode', 'i.nama', 'i.kategori', 'i.total_stok', 'i.kondisi', 'i.spek',
                             DB::raw('i.total_stok - SUM(if(p.status_peminjaman <> 2, p.jumlah, 0)) AS ketersediaan',
                               'if((i.total_stok - SUM(if(p.status_peminjaman <> 2, p.jumlah, 0))) = 0, 0, 1) AS `status`',
                               '(CASE WHEN (i.total_stok - SUM(if(p.status_peminjaman <> 2, p.jumlah, 0))) = 0 THEN 0 ELSE 1 END) AS status_barang',
@@ -122,6 +122,7 @@ class PeminjamanController extends Controller
         $id_barang = $request->input('id_barang');
         $nama_barang = $request->input('nama_barang');
         $kode_barang = $request->input('kode');
+        $spek_barang = $request->input('spek');
         $status_barang = $request->input('status');
         $total_stok = $request->input('total_stok');
         $kondisi_barang = $request->input('kondisi');
@@ -130,7 +131,7 @@ class PeminjamanController extends Controller
             DB::table('inventaris')
             ->updateOrInsert(['id' => $id_barang],
                                 ['nama'=>$nama_barang, 
-                                 'kode' => $kode_barang,
+                                 'spek' => $spek_barang,
                                  'kondisi'=>$kondisi_barang,
                                  'total_stok'=>$total_stok,
                                  'ketersediaan'=>$total_stok,]);

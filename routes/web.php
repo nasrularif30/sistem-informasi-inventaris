@@ -23,6 +23,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\Auth\RegisterController;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PendudukController;
 
 Route::get('/', [LoginController::class, 'index']);
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -46,6 +47,10 @@ Route::post('peminjaman/store', [PeminjamanController::class, 'store'])->name('p
 Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name('peminjaman.update');
 Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
 Route::get('peminjaman/delete', [PeminjamanController::class, 'destroy'])->name('peminjaman.delete');
+
+Route::resource('penduduk', PendudukController::class);
+Route::post('penduduk/store', [PendudukController::class, 'store'])->name('penduduk.store');
+Route::get('penduduk/destroy', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'handle'])->name('register');

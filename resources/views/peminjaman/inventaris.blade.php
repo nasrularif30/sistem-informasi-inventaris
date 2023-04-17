@@ -9,11 +9,17 @@
                 <input id="nama_barang" type="text" class="form-control" name="nama_barang" placeholder="Sound System" value="" required autofocus>
             </div>
         </div>
-        <div class="row mb-3" id="group_kode">
+        <div class="row mb-3" id="group_kode" style="display:none">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Kode Barang</label>
             <div class="col-md-6">
                 <input id="old_kode" type="text" class="form-control" name="old_kode" value="" hidden>
                 <input id="kode" type="text" class="form-control" name="kode" placeholder="SS01" value="" required autofocus>
+            </div>
+        </div>
+        <div class="row mb-3" id="group_spek">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Spesifikasi Barang</label>
+            <div class="col-md-6">
+                <textarea id="spek" type="text" class="form-control" name="spek" placeholder="Spesifikasi..." value="" required autofocus></textarea>
             </div>
         </div>
         <div class="row mb-3" id="group_status" style="display:none">
