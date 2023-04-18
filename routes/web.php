@@ -48,9 +48,12 @@ Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name(
 Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
 Route::get('peminjaman/delete', [PeminjamanController::class, 'destroy'])->name('peminjaman.delete');
 
-Route::resource('penduduk', PendudukController::class);
+// Route::resource('penduduk', PendudukController::class);
+Route::get('penduduk', [PendudukController::class, 'index'])->name('penduduk.index');
+Route::get('penduduk/create', [PendudukController::class, 'create'])->name('penduduk.create');
 Route::post('penduduk/store', [PendudukController::class, 'store'])->name('penduduk.store');
 Route::get('penduduk/destroy', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
+Route::get('penduduk/edit', [PendudukController::class, 'edit'])->name('penduduk.edit');
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'handle'])->name('register');

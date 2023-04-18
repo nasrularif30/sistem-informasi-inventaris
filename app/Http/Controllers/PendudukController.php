@@ -157,9 +157,15 @@ class PendudukController extends Controller
      * @param  \App\Models\Penduduk  $penduduk
      * @return \Illuminate\Http\Response
      */
-    public function edit($id = 0)
+    public function edit(Request $request)
     {
-        //
+        $id = $request->id;
+        $data = Penduduk::where('id', $id)->get()->toArray();
+        $data_alamat = Lokasi::latest()->get();
+        $data_pekerjaan = Pekerjaan::latest()->get();
+        $data_pendidikan = Pendidikan::latest()->get();
+        $data_agama = Agama::latest()->groupBy('id')->get();
+        return view('penduduk.edit', compact(['data', 'data_alamat', 'data_pekerjaan', 'data_pendidikan', 'data_agama']));
     }
 
     /**
@@ -180,14 +186,14 @@ class PendudukController extends Controller
      * @param  \App\Models\Penduduk  $penduduk
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Penduduk $penduduk)
+    public function destroy(Penduduk $penduduk, Request $request)
     {
-        // $id = $request->id;
+        $id = $request->id;
         // $tablename = 'warga';
-        // $penduduk = Penduduk::find($id);
+        $penduduk = Penduduk::where('id', $id);
         $penduduk->delete();
         // check data deleted or not
-        if ($penduduk == 1) {
+        if ($penduduk) {
             $success = true;
             $message = "Data berhasil dihapus";
         } else {

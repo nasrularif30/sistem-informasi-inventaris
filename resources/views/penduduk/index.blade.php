@@ -138,6 +138,12 @@
                     })
                 });
                 
+                $('body').on('click', '.edit', function () {
+                    var id = $(this).data('id');
+                    $.get("{{ route('penduduk.edit') }}" +'?id=' + id, function (data) {
+                        window.location = "{{ route('penduduk.edit') }}" +'?id=' + id;
+                    })
+                });
             });  
     </script>
     <script  type="text/javascript" >
