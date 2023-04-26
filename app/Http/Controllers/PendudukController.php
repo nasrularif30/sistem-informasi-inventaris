@@ -101,23 +101,21 @@ class PendudukController extends Controller
         $pekerjaan = $request->input('pekerjaan');
         $pendidikan = $request->input('pendidikan');
         $agama = $request->input('agama');
-        $file_ktp = $request->input('file_ktp');
-        $file_kk = $request->input('file_kk');
+        $file_ktp = $request->file('file_ktp');
+        $file_kk = $request->file('file_kk');
   
         $input = $request->all();
         if(!File::exists('file/')) File::makeDirectory('file/');
+        if(!File::exists('file/' . $nik)) File::makeDirectory('file/' . $nik);
+        $destinationPath = 'file/' . $nik;
   
-        if ($file_ktp) {
-            $destinationPath = '';
-            if(!File::exists('file/' . $nik . '/ktp//')) $destinationPath = File::makeDirectory('file/' . $nik . '/ktp//');
+        if ($request->hasFile('file_ktp')) {
             $file_name = "ktp_" . $nik . "." . $file_ktp->getClientOriginalExtension();
             $file_ktp->move($destinationPath, $file_name);
             $input['file_ktp'] = "$file_name";
             $file_ktp = $file_name;
         }
-        if ($file_kk) {
-            $destinationPath = '';
-            if(!File::exists('file/' . $nik . '/kk//')) $destinationPath = File::makeDirectory('file/' . $nik . '/kk//');
+        if ($request->hasFile('file_kk')) {
             $file_name = "kk_" . $nik . "." . $file_kk->getClientOriginalExtension();
             $file_kk->move($destinationPath, $file_name);
             $input['file_kk'] = "$file_name";

@@ -95,7 +95,7 @@
                                     <select class="form-control form-select select2" name="pekerjaan" id="pekerjaan" placeholder="pekerjaan">
                                         <option {{ $data[0]['pekerjaan'] ?? 'selected' }} disabled>Pekerjaan</option>
                                         @foreach($data_pekerjaan as $pekerjaan)
-                                        <option  {{ $data[0]['pekerjaan'] == $pekerjaan->id ? 'selected' : ''}} value="{{$pekerjaan->id}}">{{$pekerjaan->pekerjaan}}</option>
+                                        <option {{ $data[0]['pekerjaan'] == $pekerjaan->id ? 'selected' : ''}} value="{{$pekerjaan->id}}">{{$pekerjaan->pekerjaan}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -124,12 +124,40 @@
                             </div>
                             <div class="mb-3 row">
                                 <label class="col-3 col-form-label">File KTP</label>
+                                <div id="accordionKTP" class="col-sm-5 accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading-1">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKTP" aria-expanded="false">
+                                                Preview File KTP
+                                            </button>
+                                        </h2>
+                                        <div id="collapseKTP" class="accordion-collapse collapse" data-bs-parent="#accordionKTP" style="">
+                                            <div class="accordion-body pt-0">
+                                                <img id="previewKtp" src="{{ url('/')}}/file/{{ $data[0]['nik'] ?? ''}}/{{ $data[0]['ktp_file'] ?? ''}}" class="img-fluid" style="max-width:400px"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col">
                                     <input class="form-control " placeholder="pilih file ktp" name="file_ktp" id="file_ktp" type="file" value="{{ $data[0]['ktp_file']  ?? '' }}">
                                 </div>
                             </div>
                             <div class="mb-5 row">
                                 <label class="col-3 col-form-label">File Kartu Keluarga</label>
+                                <div id="accordionKK" class="col-sm-5 accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading-1">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKK" aria-expanded="false">
+                                                Preview File Kartu Keluarga
+                                            </button>
+                                        </h2>
+                                        <div id="collapseKK" class="accordion-collapse collapse" data-bs-parent="#accordionKK" style="">
+                                            <div class="accordion-body pt-0">
+                                                <img id="previewKk" src="{{ url('/')}}/file/{{ $data[0]['nik'] ?? ''}}/{{ $data[0]['kk_file'] ?? ''}}" class="img-fluid" style="max-width:400px"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col">
                                     <input class="form-control " placeholder="pilih file kk" name="file_kk" id="file_kk" type="file" value="{{ $data[0]['kk_file']  ?? '' }}">
                                 </div>
@@ -157,6 +185,10 @@
                     width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
                     placeholder: $( this ).data( 'placeholder' )
                 });
+            function preview(param) {
+                if(param == 'ktp') previewKtp.src = URL.createObjectURL(event.target.files[0]);
+                
+            }
 
                 $('#btnSavePenduduk').click(function (e) {
                     e.preventDefault();
@@ -169,11 +201,15 @@
                             timer: 1500
                         })
                     } else{
+                        let form = document.getElementById('formPenduduk')
+                        let formData = new FormData(form);
                         $.ajax({
-                            data: $('#formPenduduk').serialize(),
+                            data: formData,
                             url: "{{ route('penduduk.store') }}",
                             type: "POST",
-                            dataType: 'json',
+                            dataType: 'JSON',
+                            contentType: false,
+                            processData: false,
                             success: function (results) {
                                 if (results.success === true) {
                                     swal.fire("Sukses!", results.message, "success");
@@ -181,7 +217,7 @@
                                     setTimeout(function(){
                                         $('#formPenduduk').trigger("reset");
                                         location.reload();
-                                    },1000);
+                                    },1500);
                                 } else {
                                     swal.fire("Error!", results.message, "error");
                                 }

@@ -36,7 +36,7 @@
                         Kembali
                     </a>
                     </div>
-                    <form id="formPenduduk" name="formPenduduk" class="form">
+                    <form id="formPenduduk" name="formPenduduk" class="form" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body border-bottom py-3">
                             <div class="mb-3 row">
@@ -164,19 +164,23 @@
                             timer: 1500
                         })
                     } else{
+                        let form = document.getElementById('formPenduduk')
+                        let formData = new FormData(form);
                         $.ajax({
-                            data: $('#formPenduduk').serialize(),
+                            data: formData,
                             url: "{{ route('penduduk.store') }}",
                             type: "POST",
-                            dataType: 'json',
+                            dataType: 'JSON',
+                            contentType: false,
+                            processData: false,
                             success: function (results) {
                                 if (results.success === true) {
                                     swal.fire("Sukses!", results.message, "success");
                                     // refresh page after 1 seconds
                                     setTimeout(function(){
                                         $('#formPenduduk').trigger("reset");
-                                        location.reload();
-                                    },1000);
+                                        // location.reload();
+                                    },1500);
                                 } else {
                                     swal.fire("Error!", results.message, "error");
                                 }
