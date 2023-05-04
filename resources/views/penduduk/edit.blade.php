@@ -78,6 +78,17 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
+                                <label class="col-3 col-form-label required">Status Warga</label>
+                                <div class="col">
+                                    <select class="form-control form-select " name="status_warga" id="status_warga" placeholder="status_warga">
+                                        <option {{ $data[0]['status'] ?? 'selected'}} disabled>Jenis Kelamin</option>
+                                        <option {{ $data[0]['status'] == 'Penduduk' ? 'selected' : ''}} value="Penduduk">Penduduk</option>
+                                        <option {{ $data[0]['status'] == 'Kost' ? 'selected' : ''}} value="Kost">Kost</option>
+                                        <option {{ $data[0]['status'] == 'Kontrak' ? 'selected' : ''}} value="Kontrak">Kontrak</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
                                 <label class="col-3 col-form-label required">Tanggal Lahir</label>
                                 <div class="col">
                                     <input class="form-control " placeholder="tanggal lahir" name="tgl_lahir" id="tgl_lahir" type="date" value="{{ $data[0]['tanggal_lahir']  ?? '' }}">

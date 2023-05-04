@@ -27,7 +27,7 @@ use App\Http\Controllers\PendudukController;
 
 Route::get('/', [LoginController::class, 'index']);
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
 
 Route::get('users', [UsersController::class, 'index'])->name('users');

@@ -73,6 +73,17 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
+                                <label class="col-3 col-form-label required">Status</label>
+                                <div class="col">
+                                    <select class="form-control form-select " name="status_warga" id="status_warga" placeholder="status">
+                                        <option selected disabled>Status Kependudukan</option>
+                                        <option value="Penduduk">Penduduk</option>
+                                        <option value="Kost">Kost</option>
+                                        <option value="Kontrak">Kontrak</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
                                 <label class="col-3 col-form-label required">Tanggal Lahir</label>
                                 <div class="col">
                                     <input class="form-control " placeholder="tanggal lahir" name="tgl_lahir" id="tgl_lahir" type="date">
@@ -155,7 +166,7 @@
 
                 $('#btnSavePenduduk').click(function (e) {
                     e.preventDefault();
-                    if($('#nik').val() == "" || $('#nama').val() == "" || $('#jenis_kelamin').val() == ""  || $('#alamat').val() == ""  || $('#tgl_lahir').val() == ""  || $('#tempat_lahir').val() == ""  || $('#pekerjaan').val() == ""  || $('#pendidikan').val() == ""  || $('#agama').val() == "" ){
+                    if($('#nik').val() == "" || $('#nama').val() == "" || $('#jenis_kelamin').val() == ""  || $('#alamat').val() == ""  || $('#tgl_lahir').val() == ""  || $('#tempat_lahir').val() == ""  || $('#pekerjaan').val() == ""  || $('#pendidikan').val() == ""  || $('#agama').val() == ""   || $('#status_warga').val() == "" ){
                         Swal.fire({
                             position: 'top-end',
                             icon: 'warning',

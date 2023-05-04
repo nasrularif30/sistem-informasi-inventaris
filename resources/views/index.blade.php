@@ -28,6 +28,72 @@
         <div class="page-body">
           <div class="container-xl">
             <div class="row row-deck row-cards">
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="card-title">Pengajuan Surat Domisili</h3>
+                    <div class="mb-2">   
+                        Syarat dan Ketentuan:
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-checkbox"></i>
+                      <strong>Fotocopy KTP</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-checkbox"></i>
+                      <strong>Fotocopy KTM(Untuk Mahasiswa)</strong>
+                    </div>
+                    <div class="mb-3">
+                      <i class="ti ti-checkbox"></i>
+                      <strong>Surat Kampus(Untuk Mahasiswa)</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-asterisk"></i>
+                      <strong>Jika persyaratan sudah lengkap dapat menghubungi Pak Yudi</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-phone"></i>
+                      <strong>082345678928</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-home"></i>
+                      <strong>JL. Turus Asri III C/06</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="card-title">Pengajuan Peminjaman Barang</h3>
+                    <div class="mb-2">
+                      Syarat dan Ketentuan:
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-checkbox"></i>
+                      <strong>Barang yang bisa dipinjam memiliki status "Tersedia"</strong>
+                    </div>
+                    <div class="mb-3">
+                      <i class="ti ti-checkbox"></i>
+                      <strong>Waktu Peminjaman barang maksimal 7 hari</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-asterisk"></i>
+                      <strong>Jika ingin melakukan peminjaman barang silahkan Hubungi Pak Rosyid (Ketua RT)</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-phone"></i>
+                      <strong>082345678928</strong>
+                    </div>
+                    <div class="mb-2">
+                      <i class="ti ti-home"></i>
+                      <strong>JL. Turus Asri III C/06</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+            <!-- <div class="row row-deck row-cards">
               <div class="col-sm-6 col-lg-3">
                 <div class="card">
                   <div class="card-body">
@@ -116,7 +182,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
           </div>
         </div>
 @endsection

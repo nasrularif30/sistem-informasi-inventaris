@@ -44,6 +44,7 @@
                                         <th class="w-1">No</th>
                                         <th>Nama<br>Lengkap</th>
                                         <th>Alamat</th>
+                                        <th>Status</th>
                                         <th>Tanggal<br>Lahir</th>
                                         <th>Pekerjaan</th>
                                         <th>Agama</th>
@@ -81,6 +82,7 @@
                         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                         {data: 'nama_lengkap', name: 'nama_lengkap'},
                         {data: 'alamat', name: 'alamat'},
+                        {data: 'status', name: 'status'},
                         {data: 'tanggal_lahir', name: 'tanggal_lahir'},
                         {data: 'pekerjaan', name: 'pekerjaan'},
                         {data: 'agama', name: 'agama'},

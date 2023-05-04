@@ -29,7 +29,7 @@ class PendudukController extends Controller
                             ->leftJoin('pekerjaan AS pk', 'w.pekerjaan', '=', 'pk.id')
                             ->leftJoin('pendidikan AS pl', 'w.pendidikan', '=', 'pl.id')
                             ->leftJoin('jenis_kelamin AS j', 'w.jenis_kelamin', '=', 'j.id')
-                            ->select('w.id', 'w.nik', 'w.nama_lengkap', 'l.alamat_lengkap AS alamat', 'w.tanggal_lahir', 'w.tempat_lahir', 'pk.pekerjaan', 'pl.pendidikan', 'a.nama_agama AS agama', 'w.ktp_file', 'w.kk_file')
+                            ->select('w.id', 'w.nik', 'w.nama_lengkap', 'l.alamat_lengkap AS alamat', 'w.status', 'w.tanggal_lahir', 'w.tempat_lahir', 'pk.pekerjaan', 'pl.pendidikan', 'a.nama_agama AS agama', 'w.ktp_file', 'w.kk_file')
                             ->get();
             // $penduduk = Penduduk::latest()->get();
             return Datatables::of($penduduk)
@@ -96,6 +96,7 @@ class PendudukController extends Controller
         $nama = $request->input('nama');
         $alamat = $request->input('alamat');
         $jenis_kelamin = $request->input('jenis_kelamin');
+        $status = $request->input('status_warga');
         $tgl_lahir = $request->input('tgl_lahir');
         $tempat_lahir = $request->input('tempat_lahir');
         $pekerjaan = $request->input('pekerjaan');
@@ -133,7 +134,8 @@ class PendudukController extends Controller
                                             'pekerjaan' => $pekerjaan,
                                             'ktp_file' => $file_ktp,
                                             'kk_file' => $file_kk,
-                                            'id_lokasi' => $alamat
+                                            'id_lokasi' => $alamat,
+                                            'status' => $status
                                             ]);
         return response()->json(['success' => true, 'message' => 'sukses menambahkan data!']);
     }
