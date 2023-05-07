@@ -14,9 +14,6 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsersController;
@@ -24,36 +21,38 @@ use App\Http\Controllers\Auth\RegisterController;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PendudukController;
+Route::get('/', function () {
+    return view('index');
+})->middleware(['auth']);
 
-Route::get('/', [LoginController::class, 'index']);
-Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
-Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard')->middleware(['auth']);
 
-Route::get('users', [UsersController::class, 'index'])->name('users');
-Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list');
-Route::post('users/create', [UsersController::class, 'create'])->name('users.create');
-Route::post('users/store', [UsersController::class, 'store'])->name('users.store');
-Route::post('users/update', [UsersController::class, 'update'])->name('users.update');
-Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit');
-Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete');
+require __DIR__.'/auth.php';
 
-Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
-Route::get('peminjaman/list', [PeminjamanController::class, 'getAllPeminjaman'])->name('peminjaman.list');
-Route::get('peminjaman/inventaris', [PeminjamanController::class, 'getAllInventaris'])->name('peminjaman.inventaris');
-Route::post('peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
-Route::get('peminjaman/show', [PeminjamanController::class, 'show'])->name('peminjaman.show');
-Route::post('peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
-Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name('peminjaman.update');
-Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
-Route::get('peminjaman/delete', [PeminjamanController::class, 'destroy'])->name('peminjaman.delete');
+Route::get('users', [UsersController::class, 'index'])->name('users')->middleware(['auth']);
+Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list')->middleware(['auth']);
+Route::post('users/create', [UsersController::class, 'create'])->name('users.create')->middleware(['auth']);
+Route::post('users/store', [UsersController::class, 'store'])->name('users.store')->middleware(['auth']);
+Route::post('users/update', [UsersController::class, 'update'])->name('users.update')->middleware(['auth']);
+Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit')->middleware(['auth']);
+Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete')->middleware(['auth']);
+
+Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman')->middleware(['auth'])->middleware(['auth']);
+Route::get('peminjaman/list', [PeminjamanController::class, 'getAllPeminjaman'])->name('peminjaman.list')->middleware(['auth']);
+Route::get('peminjaman/inventaris', [PeminjamanController::class, 'getAllInventaris'])->name('peminjaman.inventaris')->middleware(['auth']);
+Route::post('peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create')->middleware(['auth']);
+Route::get('peminjaman/show', [PeminjamanController::class, 'show'])->name('peminjaman.show')->middleware(['auth']);
+Route::post('peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware(['auth']);
+Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name('peminjaman.update')->middleware(['auth']);
+Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit')->middleware(['auth']);
+Route::get('peminjaman/delete', [PeminjamanController::class, 'destroy'])->name('peminjaman.delete')->middleware(['auth']);
 
 // Route::resource('penduduk', PendudukController::class);
-Route::get('penduduk', [PendudukController::class, 'index'])->name('penduduk.index');
-Route::get('penduduk/create', [PendudukController::class, 'create'])->name('penduduk.create');
-Route::post('penduduk/store', [PendudukController::class, 'store'])->name('penduduk.store');
-Route::get('penduduk/destroy', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
-Route::get('penduduk/edit', [PendudukController::class, 'edit'])->name('penduduk.edit');
+Route::get('penduduk', [PendudukController::class, 'index'])->name('penduduk.index')->middleware(['auth']);
+Route::get('penduduk/create', [PendudukController::class, 'create'])->name('penduduk.create')->middleware(['auth']);
+Route::post('penduduk/store', [PendudukController::class, 'store'])->name('penduduk.store')->middleware(['auth']);
+Route::get('penduduk/destroy', [PendudukController::class, 'destroy'])->name('penduduk.destroy')->middleware(['auth']);
+Route::get('penduduk/edit', [PendudukController::class, 'edit'])->name('penduduk.edit')->middleware(['auth']);
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'handle'])->name('register');

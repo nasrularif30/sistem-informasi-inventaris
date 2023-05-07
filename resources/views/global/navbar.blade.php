@@ -4,7 +4,7 @@
           <div class="navbar navbar-light">
             <div class="container-xl">
               <ul class="navbar-nav">
-                <li class="nav-item  {{ Request::segment(1) === 'dashboard' ? 'active' : null }}">
+                <li class="nav-item  {{ Request::segment(1) === 'dashboard' || Request::segment(1) == '' ? 'active' : null }}">
                   <a class="nav-link" href="/dashboard" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                     <i class="ti ti-home"></i>
@@ -25,7 +25,7 @@
                   </a>
                 </li>
                 <li class="nav-item {{ Request::segment(1) === 'peminjaman' ? 'active' : null }}">
-                  <a class="nav-link" href="./" >
+                  <a class="nav-link" href="./peminjaman" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                     <i class="ti ti-box-seam"></i>
                     </span>
