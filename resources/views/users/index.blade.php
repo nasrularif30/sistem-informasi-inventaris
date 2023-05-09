@@ -45,7 +45,7 @@
                                         <th>Nama</th>
                                         <th>Username</th>
                                         <th>Level</th>
-                                        <th>Lokasi</th>
+                                        <!-- <th>Lokasi</th> -->
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -95,7 +95,7 @@
                         {data: 'nama', name: 'nama'},
                         {data: 'username', name: 'username'},
                         {data: 'level', name: 'level'},
-                        {data: 'id_lokasi', name: 'lokasi'},
+                        // {data: 'id_lokasi', name: 'lokasi'},
                         {
                             data: 'action', 
                             name: 'action', 
@@ -108,7 +108,6 @@
                     var id = $(this).data('id');
                     $.get("{{ route('users.edit') }}" +'?id=' + id, function (data) {
                         $('#modalTitle').html("Edit Data User");
-                        $('#btnSaveUser').val("Edit User");
                         $('#id_user').val(id);
                         $('#nama').val(data[0].nama);
                         $('#old_username').val(data[0].username);
@@ -117,6 +116,9 @@
                         $('#last_login').val(data[0].last_login);
                         $('#group_lastlogin').show();
                         $('#create_at').val(data[0].create_at);
+                        $('#group_nama').show();
+                        $('#group_username').show();
+                        $('#group_level').show();
                         $('#group_createat').show();
                         $('#group_password').hide();
                         $('#group_confirmpassword').hide();
@@ -124,6 +126,7 @@
                         $('#btnSaveUser').hide();
                         $('#modalUser').modal('show');
                         $('#btnEditUser').html('Simpan');
+                        $('#btnChangePass').hide();
                     })
                 });
                 $('body').on('click', '.changepass', function () {
@@ -141,6 +144,7 @@
                         $('#btnEditUser').hide();
                         $('#btnSaveUser').hide();
                         $('#modalUser').modal('show');
+                        $('#btnChangePass').show();
                         $('#btnChangePass').html('Simpan');
                     })
                 });
@@ -196,10 +200,14 @@
                         },
                         // return the result
                         success: function(result) {
+                            document.getElementById("formUser").reset();
                             $('#modalUser').modal("show");
                             $('#btnEditUser').hide();
                             $('#btnChangePass').hide();
                             $('#btnSaveUser').show();
+                            $('#group_nama').show();
+                            $('#group_username').show();
+                            $('#group_level').show();
                             $('#group_lastlogin').hide();
                             $('#group_createat').hide();
                             $('#group_password').show();

@@ -47,6 +47,7 @@
                 <input id="total_stok" type="number" class="form-control" name="total_stok" placeholder="10" value="" required autofocus>
             </div>
         </div>
+        
         <div class="row mb-0">
             <div class="col-md-6 offset-md-4">
                 <button id="btnSaveBarang"  class="btn btn-primary">

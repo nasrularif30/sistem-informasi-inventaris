@@ -11,10 +11,10 @@
         <div class="card card-md">
           <div class="card-body">
           <!-- Session Status -->
-          <x-auth-session-status class="mb-4" :status="session('status')" />
+          <!-- <x-auth-session-status class="mb-4" :status="session('status')" /> -->
 
           <!-- Validation Errors -->
-          <x-auth-validation-errors class="mb-4" :errors="$errors" />
+          <!-- <x-auth-validation-errors class="mb-4" :errors="$errors" /> -->
             <h2 class="h2 text-center mb-4">Silakan login</h2>
             <hr>
             @if(session('error'))

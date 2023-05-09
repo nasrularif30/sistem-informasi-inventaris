@@ -22,10 +22,9 @@ class UsersController extends Controller
     public function getAllUsers(Request $request)
     {   
         if ($request->ajax()) {
-            $data = DB::table('user_login')
-                        ->join('user_level', 'user_login.level', '=', 'user_level.id')
+            $data = DB::table('loginn AS l')
                         // ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
-                        ->select('user_login.*', 'user_level.level')
+                        ->select('l.*')
                         ->get();
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -68,16 +67,16 @@ class UsersController extends Controller
             'level' => ['string']
         ]);
         try{
-            $check = DB::select('select * from user_login where username = ?', [request('username')]);
+            $check = DB::select('select * from loginn where username = ?', [request('username')]);
             if(count($check) > 0){
                 $message = 'Username telah digunakan';
             } else{
-                DB::table('user_login')->insert([
+                DB::table('loginn')->insert([
                     'nama' => request('nama'),
                     'username' => request('username'),
                     'password' => Hash::make(request('password')),
-                    'level' => request('level') ?? 5,
-                    'id_lokasi' => request('id_lokasi') ?? 0
+                    'level' => request('level') ?? 'user',
+                    'id_warga' => request('id_warga') ?? 0
                 ]);
                 $success = true;
                 $message = 'User '.request('nama').' berhasil ditambahkan!';
@@ -109,33 +108,33 @@ class UsersController extends Controller
             'username' => ['required', 'string', 'min:4', 'max:255'],
             'old_username' => ['string', 'min:4', 'max:255'],
             'level' => ['string'],
-            'id_lokasi' => ['integer']
+            'id_warga' => ['integer']
         ]);
         $success = false;
         $message = 'error';
         if(request('username') != request('old_username')){
-            $check = DB::select('select * from user_login where username = ?', [request('username')]);
+            $check = DB::select('select * from loginn where username = ?', [request('username')]);
             if(count($check) > 0){
                 $message = 'Username telah digunakan';
             } else{
-                DB::table('user_login')->where('id', request('id_user'))->update([
+                DB::table('loginn')->where('id', request('id_user'))->update([
                     'nama' => request('nama'),
                     'username' => request('username'),
-                    'level' => request('level') ?? 5,
-                    'id_lokasi' => request('id_lokasi') ?? 0
+                    'level' => request('level') ?? 'user',
+                    'id_warga' => request('id_warga') ?? 0
                 ]);
                 $success = true;
                 $message = 'User '.request('nama').' berhasil diperbarui!';
             }
 
         } else{
-            $store = DB::table('user_login')
+            $store = DB::table('loginn')
                         ->updateOrInsert(
                             ['id' => request('id_user')],
                             ['nama' => request('nama'), 
                             'username' => request('username'), 
-                            'level' => request('level') ?? 5, 
-                            'id_lokasi' => request('id_lokasi') ?? 0]
+                            'level' => request('level') ?? 'user', 
+                            'id_warga' => request('id_warga') ?? 0]
                         );
             $success = true;
             $message = 'User '.request('nama').' berhasil diperbarui!';
@@ -168,10 +167,9 @@ class UsersController extends Controller
     public function edit(Request $request)
     {
         $id = $request->id;
-        $data = DB::table('user_login')
-        ->join('user_level', 'user_login.level', '=', 'user_level.id')
-        ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
-        ->where('user_login.id', $id)
+        $data = DB::table('loginn AS l')
+        ->select('l.id', 'l.id_warga','l.nama', 'l.username', 'l.last_login', 'l.create_at', 'l.level')
+        ->where('l.id', $id)
         ->get()
         ->toArray();
         return Response()->json($data);
@@ -189,7 +187,7 @@ class UsersController extends Controller
         $success = false;
         $message = '';
         try {
-            DB::table('user_login')->where('id', request('id_user'))->update([
+            DB::table('loginn')->where('id', request('id_user'))->update([
                 'password' => Hash::make(request('password'))
             ]);
             $success = true;
@@ -212,7 +210,7 @@ class UsersController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $delete = DB::table('user_login')->where('id', $id)->delete();
+        $delete = DB::table('loginn')->where('id', $id)->delete();
         // check data deleted or not
         if ($delete == 1) {
             $success = true;

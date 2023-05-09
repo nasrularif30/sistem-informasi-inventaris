@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PendudukController;
+use App\Http\Controllers\ProfileController;
 Route::get('/', function () {
     return view('index');
 })->middleware(['auth']);
@@ -53,6 +54,8 @@ Route::get('penduduk/create', [PendudukController::class, 'create'])->name('pend
 Route::post('penduduk/store', [PendudukController::class, 'store'])->name('penduduk.store')->middleware(['auth']);
 Route::get('penduduk/destroy', [PendudukController::class, 'destroy'])->name('penduduk.destroy')->middleware(['auth']);
 Route::get('penduduk/edit', [PendudukController::class, 'edit'])->name('penduduk.edit')->middleware(['auth']);
+
+Route::get('profile', [ProfileController::class, 'index'])->name('profile')->middleware(['auth']);
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'handle'])->name('register');
