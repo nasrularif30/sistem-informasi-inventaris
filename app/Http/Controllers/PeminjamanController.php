@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+use Illuminate\Support\Facades\File;
 
 class PeminjamanController extends Controller
 {
@@ -127,7 +128,33 @@ class PeminjamanController extends Controller
         $total_stok = $request->input('total_stok');
         $kondisi_barang = $request->input('kondisi');
         $param = $request->input('param');
+        $foto_barang = $request->file('foto_barang');
         if($param == "barang"){
+            if(!File::exists('file/')) File::makeDirectory('file/');
+            if(!File::exists('file/' . $nama_barang)) File::makeDirectory('file/' . $nama_barang);
+            $destinationPath = 'file/' . $nama_barang;
+            if($request->hasFile('foto_barang')){
+                $allowedfileExtension = ['jpg', 'png', 'gif', 'jpeg'];
+                foreach ($foto_barang as $fotobarang) {
+                    $filename = $fotobarang->getClientOriginalName();
+                    $extension = $fotobarang->getClientOriginalExtension();
+                    $check = in_array($extension, $allowedfileExtension);
+                    if ($check) {
+                        foreach ($foto_barang as $value) {
+                            // $file_name = "ktp_" . $nik . "." . $file_ktp->getClientOriginalExtension();
+                            // $file_ktp->move($destinationPath, $file_name);
+                            // $input['file_ktp'] = "$file_name";
+                            // $file_ktp = $file_name;
+                            $filename = $value->store('foto_barang');
+                            $value->move($destinationPath, $filename);
+                            DB::table('foto_inventaris')
+                            ->Insert(['id_barang'=>$id_barang, 
+                                                 'foto_barang' => $filename,
+                                        ]);
+                        }
+                    }
+                }
+            }
             DB::table('inventaris')
             ->updateOrInsert(['id' => $id_barang],
                                 ['nama'=>$nama_barang, 

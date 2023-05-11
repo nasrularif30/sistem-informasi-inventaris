@@ -36,7 +36,9 @@
                                 <label class="col-3 col-form-label ">Nama</label>
                                 <div class="col">
                                     <input id="id_user" name="id_user" type="hidden" class="form-control" value="{{ $data[0]['id'] ?? '' }}">
-                                    <input id="nama" type="text" class="form-control" name="nama" value="{{ $data[0]['nama'] ?? '' }}" readonly  autofocus>
+                                    <input id="id_warga" name="id_warga" type="hidden" class="form-control" value="{{ $data[0]['id_warga'] ?? '' }}">
+                                    <input id="old_username" name="old_username" type="hidden" class="form-control" value="{{ $data[0]['username'] ?? '' }}">
+                                    <input id="nama" type="text" class="form-control" name="nama" value="{{ $data[0]['nama'] ?? '' }}" autofocus>
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -54,20 +56,24 @@
                             <div class="mb-3 row">
                                 <label class="col-3 col-form-label ">Reset Password</label>
                                 <div class="col">
-                                    <input id="password" type="password" class="form-control" value="" name="password" readonly autocomplete="new-password">
+                                    <input id="password" type="password" class="form-control" value="" name="password" autocomplete="new-password">
                                 </div>
                             </div>
                             <div class="mb-3 row">
                                 <label class="col-3 col-form-label ">Confirm New Password</label>
                                 <div class="col">
-                                    <input id="password-confirm" type="password" class="form-control" value="" readonly name="password_confirmation" autocomplete="new-password">
+                                    <input id="password-confirm" type="password" class="form-control" value="" name="password_confirmation" autocomplete="new-password">
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-6 offset-md-4">
-                                    <button id="btnSavePenduduk" value="create" class="btn btn-primary">
-                                        <i class="ti ti-device-floppy"></i>
-                                        Simpan
+                                <div class="col-md-6 offset-md-3">
+                                    <button id="btnEditUser" value="create" class="btn btn-primary">
+                                        <i class="ti ti-edit"></i>
+                                        Update Profile
+                                    </button>
+                                    <button id="btnChangePass" value="change" class="btn btn-warning">
+                                        <i class="ti ti-key"></i>
+                                        Change Password
                                     </button>
                                 </div>
                             </div>
@@ -86,49 +92,94 @@
                     width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
                     placeholder: $( this ).data( 'placeholder' )
                 });
-            function preview(param) {
-                if(param == 'ktp') previewKtp.src = URL.createObjectURL(event.target.files[0]);
-                
-            }
-
-                $('#btnSavePenduduk').click(function (e) {
+                        
+                $('#btnEditUser').click(function (e) {
                     e.preventDefault();
-                    if($('#nik').val() == "" || $('#nama').val() == "" || $('#jenis_kelamin').val() == ""  || $('#alamat').val() == ""  || $('#tgl_lahir').val() == ""  || $('#tempat_lahir').val() == ""  || $('#pekerjaan').val() == ""  || $('#pendidikan').val() == ""  || $('#agama').val() == "" ){
+                    if($('#nama').val() == "" || $('#username').val() == ""){
                         Swal.fire({
                             position: 'top-end',
-                            icon: 'warning',
+                            icon: 'error',
                             title: 'Data tidak boleh kosong',
                             showConfirmButton: false,
                             timer: 1500
                         })
                     } else{
-                        let form = document.getElementById('formPenduduk')
-                        let formData = new FormData(form);
                         $.ajax({
-                            data: formData,
-                            url: "{{ route('penduduk.store') }}",
+                            url: "{{ url('users/store') }}",
                             type: "POST",
-                            dataType: 'JSON',
-                            contentType: false,
-                            processData: false,
+                            data: $('#formProfile').serialize(),
+                            dataType: 'json',
                             success: function (results) {
                                 if (results.success === true) {
                                     swal.fire("Sukses!", results.message, "success");
                                     // refresh page after 1 seconds
                                     setTimeout(function(){
-                                        $('#formPenduduk').trigger("reset");
+                                        // $('#formUser').trigger("reset");
+                                        // $('#modalUser').modal('hide');
+                                        // table.draw()
                                         location.reload();
-                                    },1500);
+                                    },1000);
                                 } else {
                                     swal.fire("Error!", results.message, "error");
                                 }
                             },
                             error: function (data) {
                                 console.log('Error:', data);
-                                $('#btnSavePenduduk').html('Simpan Perubahan');
+                                $('#btnEditUser').html('Update User');
                             }
                         });
-                    }                    
+                    }
+                });
+                        
+                $('#btnChangePass').click(function (e) {
+                    e.preventDefault();
+                    if($('#password').val() == "" || $('#password-confirm').val() == ""){
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Data tidak boleh kosong',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else{
+                        var password = $('#password').val();
+                        var confirmpassword = $('#password-confirm').val();
+                        if(password != confirmpassword){
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Password tidak cocok',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }else{
+                            $.ajax({
+                                url: "{{ url('users/update') }}",
+                                type: "POST",
+                                data: $('#formProfile').serialize(),
+                                dataType: 'json',
+                                success: function (results) {
+                                    if (results.success === true) {
+                                        swal.fire("Sukses!", results.message, "success");
+                                        // refresh page after 1 seconds
+                                        setTimeout(function(){
+                                            // $('#formUser').trigger("reset");
+                                            // $('#modalUser').modal('hide');
+                                            // table.draw()
+                                            location.reload();
+                                        },1000);
+                                    } else {
+                                        swal.fire("Error!", results.message, "error");
+                                    }
+                                },
+                                error: function (data) {
+                                    console.log('Error:', data);
+                                    $('#btnChangePass').html('Change Password');
+                                }
+                            });
+                        }
+                        
+                    }
                 });
                 
             });

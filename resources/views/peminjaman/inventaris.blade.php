@@ -47,6 +47,12 @@
                 <input id="total_stok" type="number" class="form-control" name="total_stok" placeholder="10" value="" required autofocus>
             </div>
         </div>
+        <div class="row mb-3" id="group_gambar">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Foto Barang</label>
+            <div class="col-md-6">
+                <input id="foto_barang[]" type="file" class="form-control" name="foto_barang[]" placeholder="foto barang" value="" multiple required autofocus>
+            </div>
+        </div>
         
         <div class="row mb-0">
             <div class="col-md-6 offset-md-4">

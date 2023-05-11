@@ -253,6 +253,7 @@
                         $('#btnSaveBarang').html("Update");
                         $('#id_barang').val(data[0].id);
                         $("#nama_barang").val(data[0].nama);
+                        $("#spek").val(data[0].spek);
                         $('#kode').val(data[0].kode);
                         $('#total_stok').val(data[0].total_stok);
                         $('#kondisi').val(data[0].kondisi);
