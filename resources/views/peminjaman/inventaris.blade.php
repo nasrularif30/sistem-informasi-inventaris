@@ -1,5 +1,5 @@
 <div class="col-md-12">
-    <form id="formBarang" name="formBarang" class="form">
+    <form id="formBarang" name="formBarang" class="form" enctype="multipart/form-data" >
         @csrf
         <div class="row mb-3" id="group_nama">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Nama Barang</label>

@@ -79,10 +79,14 @@ class PeminjamanController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a data-id="'.$row->id.'" class="editBarang btn btn-primary btn-sm">
+                    $actionBtn = '<a data-id="'.$row->id.'" class="detailBarang btn btn-success btn-sm">
+                                        <i class="ti ti-eye"></i>
+                                        Detail
+                                    </a>  
+                                    <a data-id="'.$row->id.'" class="editBarang btn btn-primary btn-sm">
                                         <i class="ti ti-edit"></i>
                                         Edit
-                                    </a>  
+                                    </a> 
                                     <a data-id="'.$row->id.'" data-param="barang" class="delete btn btn-danger btn-sm">
                                         <i class="ti ti-trash"></i>
                                         Delete
@@ -131,28 +135,36 @@ class PeminjamanController extends Controller
         $foto_barang = $request->file('foto_barang');
         if($param == "barang"){
             if(!File::exists('file/')) File::makeDirectory('file/');
-            if(!File::exists('file/' . $nama_barang)) File::makeDirectory('file/' . $nama_barang);
+            if(!File::exists('file/inventaris/')) File::makeDirectory('file/inventaris/');
+            if(!File::exists('file/inventaris/' . $nama_barang)) File::makeDirectory('file/inventaris/' . $nama_barang);
+            
+            $input=$request->all();
             $destinationPath = 'file/' . $nama_barang;
-            if($request->hasFile('foto_barang')){
+            if($request->file('foto_barang')){
                 $allowedfileExtension = ['jpg', 'png', 'gif', 'jpeg'];
                 foreach ($foto_barang as $fotobarang) {
                     $filename = $fotobarang->getClientOriginalName();
                     $extension = $fotobarang->getClientOriginalExtension();
-                    $check = in_array($extension, $allowedfileExtension);
-                    if ($check) {
-                        foreach ($foto_barang as $value) {
-                            // $file_name = "ktp_" . $nik . "." . $file_ktp->getClientOriginalExtension();
-                            // $file_ktp->move($destinationPath, $file_name);
-                            // $input['file_ktp'] = "$file_name";
-                            // $file_ktp = $file_name;
-                            $filename = $value->store('foto_barang');
-                            $value->move($destinationPath, $filename);
-                            DB::table('foto_inventaris')
-                            ->Insert(['id_barang'=>$id_barang, 
-                                                 'foto_barang' => $filename,
-                                        ]);
-                        }
-                    }
+                    $fotobarang->move($destinationPath, $filename);
+                    DB::table('foto_inventaris')
+                    ->Insert(['id_barang'=>$id_barang, 
+                                         'foto_barang' => $destinationPath . $filename,
+                                ]);
+                    // $check = in_array($extension, $allowedfileExtension);
+                    // if ($check) {
+                    //     foreach ($foto_barang as $value) {
+                    //         // $file_name = "ktp_" . $nik . "." . $file_ktp->getClientOriginalExtension();
+                    //         // $file_ktp->move($destinationPath, $file_name);
+                    //         // $input['file_ktp'] = "$file_name";
+                    //         // $file_ktp = $file_name;
+                    //         $filename = $value->store('foto_barang');
+                    //         $value->move($destinationPath, $filename);
+                    //         DB::table('foto_inventaris')
+                    //         ->Insert(['id_barang'=>$id_barang, 
+                    //                              'foto_barang' => $filename,
+                    //                     ]);
+                    //     }
+                    // }
                 }
             }
             DB::table('inventaris')
@@ -277,6 +289,17 @@ class PeminjamanController extends Controller
         }
         
         return response()->json($data);
+    }
+
+    public function detail(Request $request)
+    {
+        $id = $request->id;
+        $data = DB::table('inventaris AS i')
+                ->where('i.id', $id)
+                ->select('*')
+                ->get()
+                ->first();
+        return view('peminjaman.detail', compact('data'));
     }
 
     /**

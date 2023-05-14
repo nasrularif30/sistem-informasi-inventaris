@@ -127,6 +127,24 @@
             </div>
         </div>
     </div>
+    <!-- detail modal -->
+    <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="labelModalDetail"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Detail Inventaris</h5>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body" id="modalDetailBody">
+                    <div>
+                        @include('peminjaman.detail')
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @stack('scripts')
         <script type="text/javascript">
             $(function () {
@@ -262,6 +280,15 @@
                         $('#modalBarang').modal('show');
                     })
                 });
+                $('body').on('click', '.detailBarang', function () {
+                    var id = $(this).data('id');
+                    var param = 'barang';
+                    $.get("{{ route('peminjaman.detail') }}" +'?id=' + id, function (data) {
+                        $('#modalTitleDetail').html("Detail Inventaris");
+                        $('#modalDetail').modal('show');
+                        $('#modalDetailBody').html(data)
+                    })
+                });
                 // display a modal
                 $(document).on('click', '#addBarang', function(event) {
                     event.preventDefault();
@@ -351,7 +378,9 @@
                             data: $('#formBarang').serialize(),
                             url: "{{ route('peminjaman.create') }}",
                             type: "POST",
-                            dataType: 'json',
+                            dataType: 'JSON',
+                            contentType: false,
+                            processData: false,
                             success: function (results) {
                                 if (results.success === true) {
                                     swal.fire("Sukses!", results.message, "success");

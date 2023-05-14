@@ -46,6 +46,7 @@ Route::get('peminjaman/show', [PeminjamanController::class, 'show'])->name('pemi
 Route::post('peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware(['auth']);
 Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name('peminjaman.update')->middleware(['auth']);
 Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit')->middleware(['auth']);
+Route::get('peminjaman/detail', [PeminjamanController::class, 'detail'])->name('peminjaman.detail')->middleware(['auth']);
 Route::get('peminjaman/delete', [PeminjamanController::class, 'destroy'])->name('peminjaman.delete')->middleware(['auth']);
 
 // Route::resource('penduduk', PendudukController::class);
