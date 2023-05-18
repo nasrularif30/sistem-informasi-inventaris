@@ -374,11 +374,70 @@
                             timer: 1500
                         })
                     } else{
+                        // $('#formBarang').submit(function(e) {
+                        //     e.preventDefault();
+                        //     var formData = new FormData(this);
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: "{{ route('peminjaman.create') }}",
+                        //         data: formData,
+                        //         cache: false,
+                        //         contentType: false,
+                        //         processData: false,
+                        //         success: (results) => {
+                        //             if (results.success === true) {
+                        //                 swal.fire("Sukses!", results.message, "success");
+                        //                 // refresh page after 1 seconds
+                        //                 setTimeout(function(){
+                        //                     $('#formBarang').trigger("reset");
+                        //                     $('#modalBarang').modal('hide');
+                        //                     tablePeminjaman.draw()
+                        //                     tableBarang.draw()
+                        //                 },1000);
+                        //             } else {
+                        //                 swal.fire("Error!", results.message, "error");
+                        //             }
+                        //         },
+                        //         error: function (data) {
+                        //             console.log('Error:', data);
+                        //             $('#btnSaveBarang').html('Simpan Perubahan');
+                        //         }
+                        //     });
+                        // });
+                        
+                        let param = $('#param').val();
+                        let id_barang = $('#id_barang').val();
+                        let nama_barang = $('#nama_barang').val();
+                        let spek = $('#spek').val();
+                        let kondisi = $('#kondisi').val();
+                        let status = $('#status').val();
+                        let total_stok = $('#total_stok').val();
+                        let kode = $('#kode').val();
+
+                        let totalFoto = $('#foto_barang')[0].files.length;
+                        console.log('banyak foto: '+totalFoto);
+                        let files = $('#foto_barang')[0];
+                        var formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}')
+                        formData.append('param', param)
+                        formData.append('id_barang', id_barang)
+                        formData.append('nama_barang', nama_barang)
+                        formData.append('spek', spek)
+                        formData.append('kondisi', kondisi)
+                        formData.append('status', status)
+                        formData.append('total_stok', total_stok)
+                        formData.append('kode', kode)
+                        for (let i = 0; i < totalFoto; i++) {
+                            formData.append('foto_barang' + i, files.files[i]);
+                        }
+                        formData.append('totalFoto', totalFoto);
                         $.ajax({
-                            data: $('#formBarang').serialize(),
-                            url: "{{ route('peminjaman.create') }}",
-                            type: "POST",
-                            dataType: 'JSON',
+                            // data: $('#formBarang').serialize(),
+                            url: "{{ route('peminjaman.create') }}"+'?_token=' + '{{ csrf_token() }}',
+                            type: "post",
+                            dataType: 'json',
+                            data: formData,
+                            cache: false,
                             contentType: false,
                             processData: false,
                             success: function (results) {
@@ -414,6 +473,16 @@
                             timer: 1500
                         })
                     } else{
+                        data = {};
+                        data.param = $('#param').val();
+                        data.id_barang = $('#id_barang').val();
+                        data.nama_barang = $('#nama_barang').val();
+                        data.spek = $('#spek').val();
+                        data.kondisi = $('#kondisi').val();
+                        data.status = $('#status').val();
+                        data.total_stok = $('#total_stok').val();
+                        data.foto_barang = $('#foto_barang').val();
+                        data.kode = $('#kode').val();
                         $.ajax({
                             url: "{{ url('peminjaman/store') }}",
                             type: "POST",

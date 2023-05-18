@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 use Illuminate\Support\Facades\File;
+use App\Models\FotoInventaris;
+use Illuminate\Support\Str;
 
 class PeminjamanController extends Controller
 {
@@ -132,39 +134,37 @@ class PeminjamanController extends Controller
         $total_stok = $request->input('total_stok');
         $kondisi_barang = $request->input('kondisi');
         $param = $request->input('param');
-        $foto_barang = $request->file('foto_barang');
+        $totalFile = $request->input('totalFile');
+        // $foto_barang = $request->file('foto_barang');
+        // die(print_r($request->input('spek')));
         if($param == "barang"){
             if(!File::exists('file/')) File::makeDirectory('file/');
             if(!File::exists('file/inventaris/')) File::makeDirectory('file/inventaris/');
-            if(!File::exists('file/inventaris/' . $nama_barang)) File::makeDirectory('file/inventaris/' . $nama_barang);
+            if(!File::exists('file/inventaris/' . $id_barang)) File::makeDirectory('file/inventaris/' . $id_barang);
             
             $input=$request->all();
-            $destinationPath = 'file/' . $nama_barang;
-            if($request->file('foto_barang')){
-                $allowedfileExtension = ['jpg', 'png', 'gif', 'jpeg'];
-                foreach ($foto_barang as $fotobarang) {
-                    $filename = $fotobarang->getClientOriginalName();
-                    $extension = $fotobarang->getClientOriginalExtension();
-                    $fotobarang->move($destinationPath, $filename);
-                    DB::table('foto_inventaris')
-                    ->Insert(['id_barang'=>$id_barang, 
-                                         'foto_barang' => $destinationPath . $filename,
-                                ]);
-                    // $check = in_array($extension, $allowedfileExtension);
-                    // if ($check) {
-                    //     foreach ($foto_barang as $value) {
-                    //         // $file_name = "ktp_" . $nik . "." . $file_ktp->getClientOriginalExtension();
-                    //         // $file_ktp->move($destinationPath, $file_name);
-                    //         // $input['file_ktp'] = "$file_name";
-                    //         // $file_ktp = $file_name;
-                    //         $filename = $value->store('foto_barang');
-                    //         $value->move($destinationPath, $filename);
-                    //         DB::table('foto_inventaris')
-                    //         ->Insert(['id_barang'=>$id_barang, 
-                    //                              'foto_barang' => $filename,
-                    //                     ]);
-                    //     }
-                    // }
+            $destinationPath = 'file/inventaris/' . $id_barang;
+            $file_name = Str::random(10) . "." . $request->file('foto_barang0')->getClientOriginalExtension();
+            $request->file('foto_barang0')->move($destinationPath, $file_name);
+            $foto_barang = $destinationPath . '/' . $file_name;
+            DB::table('foto_inventaris')
+                ->insert(['id_barang'=>$id_barang, 
+                            'foto_barang' => $foto_barang,
+                        ]);
+            // die(print_r($foto_barang));
+            if ($totalFile > 0) {
+                for ($i=0; $i < $request->toalFoto; $i++) { 
+                    // die(print_r($i));
+                    if($request->hasFile('foto_barang'."$i")){
+                        $file_name = Str::random(10) . "." . $request->file('foto_barang'."$i")->getClientOriginalExtension();
+                        $request->file('foto_barang'."$i")->move($destinationPath, $file_name);
+                        $foto_barang = $destinationPath . '/' . $file_name;
+                        
+                        DB::table('foto_inventaris')
+                            ->insert(['id_barang'=>$id_barang, 
+                                        'foto_barang' => $foto_barang,
+                                    ]);
+                    }
                 }
             }
             DB::table('inventaris')
