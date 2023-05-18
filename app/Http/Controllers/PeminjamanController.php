@@ -126,7 +126,9 @@ class PeminjamanController extends Controller
         $status_peminjaman = $request->input('status_peminjaman');
         $id_barang_peminjaman = $request->input('nama_barang_peminjaman') ?? $request->input('id_barang_peminjaman');
 
-        $id_barang = $request->input('id_barang');
+        $lastBarang = DB::table('inventaris')->select('*')->orderBy('id', 'DESC')->first();
+        
+        $id_barang = $request->input('id_barang') ?? $lastBarang->id + 1;
         $nama_barang = $request->input('nama_barang');
         $kode_barang = $request->input('kode');
         $spek_barang = $request->input('spek');
@@ -299,7 +301,11 @@ class PeminjamanController extends Controller
                 ->select('*')
                 ->get()
                 ->first();
-        return view('peminjaman.detail', compact('data'));
+        $dataFoto = DB::table('foto_inventaris AS fi')
+                ->where('fi.id_barang', $id)
+                ->select('*')
+                ->get();
+        return view('peminjaman.detail', compact(['data', 'dataFoto']));
     }
 
     /**

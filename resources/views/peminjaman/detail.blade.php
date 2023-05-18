@@ -20,9 +20,11 @@
         </tbody>
     </table>
     <div class="row g-2 g-md-3 mt-3">
+        @foreach($dataFoto as $fb)
         <div class="col-6">
                 <!-- Photo -->
-                <div class="img-responsive img-responsive-1x1 rounded-3 border" style="background-image: url(./static/photos/blue-sofa-with-pillows-in-a-designer-living-room-interior.jpg)"></div>
+                <div class="img-responsive img-responsive rounded-3 border" style="background-image: url('{{url($fb->foto_barang)}}')"></div>
         </div>
+        @endforeach
     </div>
 </div>
