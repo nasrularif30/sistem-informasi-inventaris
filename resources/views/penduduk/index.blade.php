@@ -64,6 +64,7 @@
         </div>
     </div>
 </div>
+
     @stack('scripts')
         <script type="text/javascript">
             $(function () {

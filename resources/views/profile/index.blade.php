@@ -50,7 +50,7 @@
                             <div class="mb-3 row">
                                 <label class="col-3 col-form-label ">Level</label>
                                 <div class="col">
-                                    <input type="text" class="form-control" readonly  placeholder="Level" id="level" name="level" value="{{ $data[0]['level'] ?? '' }}">
+                                    <input type="text" class="form-control" readonly  placeholder="Level" id="level" name="level" value="{{ $data[0]['leveldata'] ?? '' }}">
                                 </div>
                             </div>
                             <div class="mb-3 row">

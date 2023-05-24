@@ -4,22 +4,22 @@
         <div class="row mb-3" id="group_nama">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Nama Barang</label>
             <div class="col-md-6">
-                <input id="id_barang" name="id_barang" type="hidden" class="form-control" value="">
+                <input id="id_barang" name="id_barang" type="hidden" class="form-control" value="{{ $data->id ?? '' }}">
                 <input id="param" name="param" type="hidden" class="form-control" value="barang">
-                <input id="nama_barang" type="text" class="form-control" name="nama_barang" placeholder="Sound System" value required autofocus>
+                <input id="nama_barang" type="text" class="form-control" name="nama_barang" placeholder="Sound System" value required autofocus>{{ $data->nama ?? '' }}
             </div>
         </div>
         <div class="row mb-3" id="group_kode" style="display:none">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Kode Barang</label>
             <div class="col-md-6">
                 <input id="old_kode" type="text" class="form-control" name="old_kode" value="" hidden>
-                <input id="kode" type="text" class="form-control" name="kode" placeholder="SS01" value="" required autofocus>
+                <input id="kode" type="text" class="form-control" name="kode" placeholder="SS01" value="{{ $data->kode ?? '' }}" required autofocus>
             </div>
         </div>
         <div class="row mb-3" id="group_spek">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Spesifikasi Barang</label>
             <div class="col-md-6">
-                <textarea id="spek" type="text" class="form-control" name="spek" placeholder="Spesifikasi..." value="" required autofocus></textarea>
+                <textarea id="spek" type="text" class="form-control" name="spek" placeholder="Spesifikasi..." value="{{ $data->spek ?? '' }}" required autofocus></textarea>
             </div>
         </div>
         <div class="row mb-3" id="group_status" style="display:none">
@@ -44,13 +44,37 @@
         <div class="row mb-3" id="group_jumlah">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Jumlah Barang</label>
             <div class="col-md-6">
-                <input id="total_stok" type="number" class="form-control" name="total_stok" placeholder="10" value="" required autofocus>
+                <input id="total_stok" type="number" class="form-control" name="total_stok" placeholder="10" value="{{ $data->total_stok ?? '' }}" required autofocus>
             </div>
         </div>
         <div class="row mb-3" id="group_gambar">
             <label for="nama" class="col-md-4 col-form-label text-md-end">Upload Foto Barang</label>
             <div class="col-md-6">
                 <input id="foto_barang" type="file" class="form-control" name="foto_barang[]" placeholder="foto barang" value="" multiple required autofocus>
+            </div>
+        </div>
+        <div class="row mb-3" id="group_list_gambar">
+            <label for="nama" class="col-md-4 col-form-label text-md-end">Foto Barang</label>
+            <div class="col-md-6">
+            <table class="table card-table table-vcenter">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Path</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $i = 0 @endphp
+                    @foreach($dataFoto as $df)
+                    <tr>
+                        <td>@php $i++ @endphp</td>
+                        <td>{{ $df->foto_barang ?? '' }}</td>
+                        <td>{{ $df->id ?? '' }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
             </div>
         </div>
         <div class="row mb-0">

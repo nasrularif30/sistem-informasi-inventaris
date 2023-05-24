@@ -21,11 +21,11 @@
             <label class="col-md-4 col-form-label text-md-end">Level</label>
             <div class="col-md-6">
                 <select class="form-select" id="level" name="level">
-                    <option value="admin">Admin</option>
-                    <option value="ketua RT">Ketua RT</option>
-                    <option value="sekretaris">Sekretaris</option>
-                    <option value="pj">Penanggung Jawab</option>
-                    <option value="user" selected>Warga</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Ketua RT">Ketua RT</option>
+                    <option value="Sekretaris">Sekretaris</option>
+                    <option value="PJ">Penanggung Jawab</option>
+                    <option value="User" selected>User</option>
                 </select>
             </div>
         </div>

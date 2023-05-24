@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
@@ -20,9 +20,11 @@ class PeminjamanController extends Controller
     {
         $data_peminjam = DB::table('warga')->get()->toArray();
         $data_barang = DB::table('inventaris')->get()->toArray();
+        $dataFoto = DB::table('foto_inventaris AS fi')->select('*')->get();
 
         return view('peminjaman.index', ['data_barang'=>$data_barang,
-                                                'data_peminjam'=>$data_peminjam]);
+                                                'data_peminjam'=>$data_peminjam,
+                                                'dataFoto'=>$dataFoto]);
         // return view('peminjaman.index');
     }
 
@@ -81,11 +83,13 @@ class PeminjamanController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a data-id="'.$row->id.'" class="detailBarang btn btn-success btn-sm">
+                    $actionBtn = '<a data-id="'.$row->id.'" class="detailBarang btn btn-success btn-sm me-1">
                                         <i class="ti ti-eye"></i>
                                         Detail
-                                    </a>  
-                                    <a data-id="'.$row->id.'" class="editBarang btn btn-primary btn-sm">
+                                    </a>';
+                    
+                    if(Auth::user()->leveldata === 'Admin' || Auth::user()->leveldata === 'Ketua RT' || Auth::user()->leveldata === 'Sekretaris' )  {
+                        $actionBtn .= '<a data-id="'.$row->id.'" class="editBarang btn btn-primary btn-sm">
                                         <i class="ti ti-edit"></i>
                                         Edit
                                     </a> 
@@ -93,6 +97,7 @@ class PeminjamanController extends Controller
                                         <i class="ti ti-trash"></i>
                                         Delete
                                     </a>';
+                    }
                     return $actionBtn;
                 })
                 ->addColumn('status', function($row){
@@ -283,14 +288,21 @@ class PeminjamanController extends Controller
                     ->orderBy('p.id', 'DESC')
                     ->get()
                     ->toArray();
+            return response()->json($data);
         } else {
             $data = DB::table('inventaris AS i')
                     ->where('i.id', $id)
+                    ->select('*')
                     ->get()
                     ->toArray();
+            $dataFoto = DB::table('foto_inventaris AS fi')
+                    ->where('fi.id_barang', $id)
+                    ->select('*')
+                    ->get();
+            // return view('peminjaman.inventaris', compact(['data', 'dataFoto']));
+            return response()->json($data);
         }
         
-        return response()->json($data);
     }
 
     public function detail(Request $request)
@@ -305,6 +317,7 @@ class PeminjamanController extends Controller
                 ->where('fi.id_barang', $id)
                 ->select('*')
                 ->get();
+        // return response()->json(['data'=>$data, 'dataFoto'=>$dataFoto]);
         return view('peminjaman.detail', compact(['data', 'dataFoto']));
     }
 

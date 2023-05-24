@@ -22,21 +22,24 @@ use Yajra\Datatables\Datatables;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\ProfileController;
+
+require __DIR__.'/auth.php';
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    Route::get('users', [UsersController::class, 'index'])->name('users')->middleware(['auth']);
+    Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list')->middleware(['auth']);
+    Route::post('users/create', [UsersController::class, 'create'])->name('users.create')->middleware(['auth']);
+    Route::post('users/store', [UsersController::class, 'store'])->name('users.store')->middleware(['auth']);
+    Route::post('users/update', [UsersController::class, 'update'])->name('users.update')->middleware(['auth']);
+    Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit')->middleware(['auth']);
+    Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete')->middleware(['auth']);
+    
+});
 Route::get('/', function () {
     return view('index');
 })->middleware(['auth']);
 
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard')->middleware(['auth']);
-
-require __DIR__.'/auth.php';
-
-Route::get('users', [UsersController::class, 'index'])->name('users')->middleware(['auth']);
-Route::get('users/list', [UsersController::class, 'getAllUsers'])->name('users.list')->middleware(['auth']);
-Route::post('users/create', [UsersController::class, 'create'])->name('users.create')->middleware(['auth']);
-Route::post('users/store', [UsersController::class, 'store'])->name('users.store')->middleware(['auth']);
-Route::post('users/update', [UsersController::class, 'update'])->name('users.update')->middleware(['auth']);
-Route::get('users/edit', [UsersController::class, 'edit'])->name('users.edit')->middleware(['auth']);
-Route::get('users/delete', [UsersController::class, 'destroy'])->name('users.delete')->middleware(['auth']);
 
 Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman')->middleware(['auth'])->middleware(['auth']);
 Route::get('peminjaman/list', [PeminjamanController::class, 'getAllPeminjaman'])->name('peminjaman.list')->middleware(['auth']);

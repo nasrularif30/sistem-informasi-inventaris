@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Penduduk;
 use App\Models\Agama;
 use App\Models\Lokasi;
@@ -46,10 +47,31 @@ class PendudukController extends Controller
                                     </a>';
                             return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->addColumn('ktp_file', function($row){
+                        $icon = '';
+                        if($row->ktp_file) $icon = '<span class="badge badge-pill bg-success"><i class="ti ti-check"></i></span>';
+                        else $icon = '<span class="badge badge-pill bg-warning"><i class="ti ti-alert-circle"></i></span>';
+                        return $icon;
+                    })
+                    ->addColumn('kk_file', function($row){
+                        $icon = '';
+                        if($row->kk_file) $icon = '<span class="badge badge-pill bg-success"><i class="ti ti-check"></i></span>';
+                        else $icon = '<span class="badge badge-pill bg-warning"><i class="ti ti-alert-circle"></i></span>';
+                        return $icon;
+                    })
+                    ->rawColumns(['action', 'ktp_file', 'kk_file'])
                     ->make(true);
         }
-      
+        if(Auth::user()->leveldata == 'User'){
+            $id = Auth::user()->id_warga ?? 0;
+            if($id == 0) return create();
+            $data = Penduduk::where('id', $id)->get()->toArray();
+            $data_alamat = Lokasi::latest()->get();
+            $data_pekerjaan = Pekerjaan::latest()->get();
+            $data_pendidikan = Pendidikan::latest()->get();
+            $data_agama = Agama::latest()->groupBy('id')->get();
+            return view('penduduk.edit', compact(['data', 'data_alamat', 'data_pekerjaan', 'data_pendidikan', 'data_agama']));
+        }
         return view('penduduk.index',compact('penduduk'));
     }
 

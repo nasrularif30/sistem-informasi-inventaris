@@ -75,7 +75,7 @@ class UsersController extends Controller
                     'nama' => request('nama'),
                     'username' => request('username'),
                     'password' => Hash::make(request('password')),
-                    'level' => request('level') ?? 'user',
+                    'leveldata' => request('level') ?? 'User',
                     'id_warga' => request('id_warga') ?? 0
                 ]);
                 $success = true;
@@ -120,7 +120,7 @@ class UsersController extends Controller
                 DB::table('loginn')->where('id', request('id_user'))->update([
                     'nama' => request('nama'),
                     'username' => request('username'),
-                    'level' => request('level') ?? 'user',
+                    'leveldata' => request('level') ?? 'User',
                     'id_warga' => request('id_warga') ?? 0
                 ]);
                 $success = true;
@@ -133,7 +133,7 @@ class UsersController extends Controller
                             ['id' => request('id_user')],
                             ['nama' => request('nama'), 
                             'username' => request('username'), 
-                            'level' => request('level') ?? 'user', 
+                            'leveldata' => request('level') ?? 'User', 
                             'id_warga' => request('id_warga') ?? 0]
                         );
             $success = true;
@@ -168,7 +168,7 @@ class UsersController extends Controller
     {
         $id = $request->id;
         $data = DB::table('loginn AS l')
-        ->select('l.id', 'l.id_warga','l.nama', 'l.username', 'l.last_login', 'l.create_at', 'l.level')
+        ->select('l.id', 'l.id_warga','l.nama', 'l.username', 'l.last_login', 'l.create_at', 'l.leveldata')
         ->where('l.id', $id)
         ->get()
         ->toArray();

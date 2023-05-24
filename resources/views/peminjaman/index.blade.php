@@ -27,6 +27,7 @@
 <div class="page-body">
     <div class="container-xl">
         <div class="row row-deck row-cards">
+            @if(Auth::user()->leveldata == 'Admin' || Auth::user()->leveldata == 'Ketua RT' || Auth::user()->leveldata == 'Sekretaris')
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
@@ -58,6 +59,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
@@ -94,7 +96,7 @@
     <!-- inventaris modal -->
     <div class="modal fade" id="modalBarang" tabindex="-1" role="dialog" aria-labelledby="labelModalBarang"
         aria-hidden="true">
-        <div class="modal-dialog md" role="form">
+        <div class="modal-dialog xl" role="form">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleBarang">Tambah Inventaris Baru</h5>

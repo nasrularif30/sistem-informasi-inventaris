@@ -30,15 +30,17 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                    <h3 class="card-title">Edit Data Penduduk</h3>
-                    <a id="btnReset" name="btnReset" type="button" class="btn btn-square btn-danger ms-auto" href="/penduduk/create">
-                        <i class="ti ti-reload"></i>
-                        Reset Form
-                    </a>
-                    <a id="btnBack" name="btnBack" type="button" class="btn btn-square btn-warning ms-1" href="/penduduk">
-                        <i class="ti ti-arrow-left"></i>
-                        Kembali
-                    </a>
+                        <h3 class="card-title">Edit Data Penduduk</h3>
+                        @if(Auth::user()->leveldata != 'User')
+                        <a id="btnReset" name="btnReset" type="button" class="btn btn-square btn-danger ms-auto" href="/penduduk/create">
+                            <i class="ti ti-reload"></i>
+                            Reset Form
+                        </a>
+                        <a id="btnBack" name="btnBack" type="button" class="btn btn-square btn-warning ms-1" href="/penduduk">
+                            <i class="ti ti-arrow-left"></i>
+                            Kembali
+                        </a>
+                        @endif
                     </div>
                     <form id="formPenduduk" name="formPenduduk" class="form">
                         @csrf
@@ -244,6 +246,4 @@
             });
 
     </script>
-    <script  type="text/javascript" >
-        </script>
         @endsection

@@ -94,7 +94,7 @@
                         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                         {data: 'nama', name: 'nama'},
                         {data: 'username', name: 'username'},
-                        {data: 'level', name: 'level'},
+                        {data: 'leveldata', name: 'leveldata'},
                         // {data: 'id_lokasi', name: 'lokasi'},
                         {
                             data: 'action', 
@@ -112,7 +112,7 @@
                         $('#nama').val(data[0].nama);
                         $('#old_username').val(data[0].username);
                         $('#username').val(data[0].username);
-                        $('#level').val(data[0].level_id);
+                        $('#level').val(data[0].leveldata);
                         $('#last_login').val(data[0].last_login);
                         $('#group_lastlogin').show();
                         $('#create_at').val(data[0].create_at);
