@@ -50,7 +50,9 @@ Route::post('peminjaman/store', [PeminjamanController::class, 'store'])->name('p
 Route::post('peminjaman/update', [PeminjamanController::class, 'update'])->name('peminjaman.update')->middleware(['auth']);
 Route::get('peminjaman/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit')->middleware(['auth']);
 Route::get('peminjaman/detail', [PeminjamanController::class, 'detail'])->name('peminjaman.detail')->middleware(['auth']);
+Route::get('peminjaman/editFoto', [PeminjamanController::class, 'editFoto'])->name('peminjaman.editfoto')->middleware(['auth']);
 Route::get('peminjaman/delete', [PeminjamanController::class, 'destroy'])->name('peminjaman.delete')->middleware(['auth']);
+Route::get('peminjaman/deleteFoto', [PeminjamanController::class, 'deleteFoto'])->name('peminjaman.deletefoto')->middleware(['auth']);
 
 // Route::resource('penduduk', PendudukController::class);
 Route::get('penduduk', [PendudukController::class, 'index'])->name('penduduk.index')->middleware(['auth']);
@@ -58,6 +60,7 @@ Route::get('penduduk/create', [PendudukController::class, 'create'])->name('pend
 Route::post('penduduk/store', [PendudukController::class, 'store'])->name('penduduk.store')->middleware(['auth']);
 Route::get('penduduk/destroy', [PendudukController::class, 'destroy'])->name('penduduk.destroy')->middleware(['auth']);
 Route::get('penduduk/edit', [PendudukController::class, 'edit'])->name('penduduk.edit')->middleware(['auth']);
+Route::get('penduduk/export', [PendudukController::class, 'generatePDF'])->name('penduduk.export')->middleware(['auth']);
 
 Route::get('profile', [ProfileController::class, 'index'])->name('profile')->middleware(['auth']);
 

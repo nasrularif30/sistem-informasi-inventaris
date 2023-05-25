@@ -32,7 +32,21 @@ class PendudukController extends Controller
                             ->leftJoin('jenis_kelamin AS j', 'w.jenis_kelamin', '=', 'j.id')
                             ->select('w.id', 'w.nik', 'w.nama_lengkap', 'l.alamat_lengkap AS alamat', 'w.status', 'w.tanggal_lahir', 'w.tempat_lahir', 'pk.pekerjaan', 'pl.pendidikan', 'a.nama_agama AS agama', 'w.ktp_file', 'w.kk_file')
                             ->get();
-            // $penduduk = Penduduk::latest()->get();
+            if(Auth::user()->leveldata == 'PJ'){
+                $id_warga = Auth::user()->id_warga;
+                $id_lokasi = Penduduk::where('id', $id_warga)->get()->first();
+                $id_lokasi = $id_lokasi->id_lokasi;
+                $penduduk = DB::table('warga AS w')
+                                ->leftJoin('lokasi AS l', 'w.id_lokasi', '=', 'l.id')
+                                ->leftJoin('agama AS a', 'w.agama', '=', 'a.id')
+                                ->leftJoin('pekerjaan AS pk', 'w.pekerjaan', '=', 'pk.id')
+                                ->leftJoin('pendidikan AS pl', 'w.pendidikan', '=', 'pl.id')
+                                ->leftJoin('jenis_kelamin AS j', 'w.jenis_kelamin', '=', 'j.id')
+                                ->select('w.id', 'w.nik', 'w.nama_lengkap', 'l.alamat_lengkap AS alamat', 'w.status', 'w.tanggal_lahir', 'w.tempat_lahir', 'pk.pekerjaan', 'pl.pendidikan', 'a.nama_agama AS agama', 'w.ktp_file', 'w.kk_file')
+                                ->where('id_lokasi', $id_lokasi)
+                                ->get();
+
+            }
             return Datatables::of($penduduk)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -86,6 +100,13 @@ class PendudukController extends Controller
         $data_pekerjaan = Pekerjaan::latest()->get();
         $data_pendidikan = Pendidikan::latest()->get();
         $data_agama = Agama::latest()->groupBy('id')->get();
+
+        if(Auth::user()->leveldata == 'PJ'){
+            $id_warga = Auth::user()->id_warga;
+            $id_lokasi = Penduduk::where('id', $id_warga)->get()->first();
+            $id_lokasi = $id_lokasi->id_lokasi;
+            $data_alamat = Lokasi::where('id', $id_lokasi)->latest()->get();
+        }
         return view('penduduk.create', compact(['data_alamat', 'data_pekerjaan', 'data_pendidikan', 'data_agama']));
     }
 
@@ -201,6 +222,20 @@ class PendudukController extends Controller
     {
         //
     }
+    
+    public function generatePDF()
+    {
+        return view('penduduk.export');
+        $data = [
+            'title' => 'Data Penduduk',
+            'date' => date('d/m/Y H:i:s')
+        ];
+          
+        $pdf = PDF::loadView('myPDF', $data);
+        $date = date('Ymd_His');
+        $filename = "PendudukTurusAsri_".$date;
+        return $pdf->download($filename);
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -228,5 +263,27 @@ class PendudukController extends Controller
             'success' => $success,
             'message' => $message,
         ]);
+    }
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\DataTables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder()
+                    ->setTableId('tablePenduduk')
+                    ->columns($this->getColumns())
+                    ->minifiedAjax()
+                    ->dom('Bfrtip')
+                    ->orderBy(1)
+                    ->buttons(
+                        Button::make('create'),
+                        Button::make('export'),
+                        Button::make('print'),
+                        Button::make('reset'),
+                        Button::make('reload')
+                    );
     }
 }

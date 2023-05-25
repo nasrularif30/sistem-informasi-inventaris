@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
@@ -85,17 +86,21 @@ class PeminjamanController extends Controller
                 ->addColumn('action', function($row){
                     $actionBtn = '<a data-id="'.$row->id.'" class="detailBarang btn btn-success btn-sm me-1">
                                         <i class="ti ti-eye"></i>
-                                        Detail
+                                        detail
                                     </a>';
                     
                     if(Auth::user()->leveldata === 'Admin' || Auth::user()->leveldata === 'Ketua RT' || Auth::user()->leveldata === 'Sekretaris' )  {
                         $actionBtn .= '<a data-id="'.$row->id.'" class="editBarang btn btn-primary btn-sm">
                                         <i class="ti ti-edit"></i>
-                                        Edit
+                                        edit
+                                    </a> 
+                                    <a data-id="'.$row->id.'" class="editFoto btn btn-warning btn-sm">
+                                        <i class="ti ti-camera-cog"></i>
+                                        edit foto
                                     </a> 
                                     <a data-id="'.$row->id.'" data-param="barang" class="delete btn btn-danger btn-sm">
                                         <i class="ti ti-trash"></i>
-                                        Delete
+                                        delete
                                     </a>';
                     }
                     return $actionBtn;
@@ -148,16 +153,17 @@ class PeminjamanController extends Controller
             if(!File::exists('file/')) File::makeDirectory('file/');
             if(!File::exists('file/inventaris/')) File::makeDirectory('file/inventaris/');
             if(!File::exists('file/inventaris/' . $id_barang)) File::makeDirectory('file/inventaris/' . $id_barang);
-            
-            $input=$request->all();
-            $destinationPath = 'file/inventaris/' . $id_barang;
-            $file_name = Str::random(10) . "." . $request->file('foto_barang0')->getClientOriginalExtension();
-            $request->file('foto_barang0')->move($destinationPath, $file_name);
-            $foto_barang = $destinationPath . '/' . $file_name;
-            DB::table('foto_inventaris')
-                ->insert(['id_barang'=>$id_barang, 
-                            'foto_barang' => $foto_barang,
-                        ]);
+            if($request->hasFile('foto_barang0')){
+                $input=$request->all();
+                $destinationPath = 'file/inventaris/' . $id_barang;
+                $file_name = Str::random(10) . "." . $request->file('foto_barang0')->getClientOriginalExtension();
+                $request->file('foto_barang0')->move($destinationPath, $file_name);
+                $foto_barang = $destinationPath . '/' . $file_name;
+                DB::table('foto_inventaris')
+                    ->insert(['id_barang'=>$id_barang, 
+                                'foto_barang' => $foto_barang,
+                            ]);
+            }
             // die(print_r($foto_barang));
             if ($totalFile > 0) {
                 for ($i=0; $i < $request->toalFoto; $i++) { 
@@ -321,6 +327,22 @@ class PeminjamanController extends Controller
         return view('peminjaman.detail', compact(['data', 'dataFoto']));
     }
 
+    public function editFoto(Request $request)
+    {
+        $id = $request->id;
+        $data = DB::table('inventaris AS i')
+                ->where('i.id', $id)
+                ->select('*')
+                ->get()
+                ->first();
+        $dataFoto = DB::table('foto_inventaris AS fi')
+                ->where('fi.id_barang', $id)
+                ->select('*')
+                ->get();
+        // return response()->json(['data'=>$data, 'dataFoto'=>$dataFoto]);
+        return view('peminjaman.editfoto', compact(['data', 'dataFoto']));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -350,6 +372,29 @@ class PeminjamanController extends Controller
             $tablename = 'inventaris';
         }
         $delete = DB::table($tablename)->where('id', $id)->delete();
+        // check data deleted or not
+        if ($delete == 1) {
+            $success = true;
+            $message = "Data berhasil dihapus";
+        } else {
+            $success = false;
+            $message = "Terjadi kesalahan";
+        }
+
+        //  return response
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+        
+    }
+    public function deleteFoto(Request $request)
+    {
+        $id = $request->id;
+        $path = $request->path;
+        $tablename = 'foto_inventaris';
+        $delete = DB::table($tablename)->where('id', $id)->delete();
+        $deleteFile = Storage::delete([$path]);
         // check data deleted or not
         if ($delete == 1) {
             $success = true;

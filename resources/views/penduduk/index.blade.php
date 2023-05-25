@@ -42,10 +42,10 @@
                                 <thead class="my-1">
                                     <tr>
                                         <th class="w-1">No</th>
-                                        <th>Nama<br>Lengkap</th>
+                                        <th>Nama <br>Lengkap</th>
                                         <th>Alamat</th>
                                         <th>Status</th>
-                                        <th>Tanggal<br>Lahir</th>
+                                        <th>Tanggal <br>Lahir</th>
                                         <th>Pekerjaan</th>
                                         <th>Agama</th>
                                         <th>Pendidikan</th>
@@ -73,12 +73,36 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
+                var title = "DATA WARGA RT. 07 RW. III KELURAHAN BULUSAN \nKECAMATAN TEMBALANG \nKOTA SEMARANG"
                 var tablePenduduk = $('.table-penduduk').DataTable({
                     processing: true,
                     serverSide: true,
                     paging: true,
                     ajax: "{{ route('penduduk.index') }}",
+                    dom: "<'row'<'col-sm-2'l><'col-sm-6'B><'col-sm-3'f>>" +
+                            "<'row'<'col-sm-12'tr>>" +
+                            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    buttons: [
+                        $.extend(
+                            true,
+                            {},
+                            {
+                                extend: "pdfHtml5",
+                                text: '<i class="ti ti-pdf"></i> Export PDF',
+                                className: "btn btn-success btn-sm",
+                                title: title,
+                                pageSize: 'A4',
+                                aligment: 'center',
+                                filename: 'Data Penduduk Turus Asri - '+ new Date().getTime(),
+                                exportOptions: {
+                                    columns: [0,1,2,4,5,6,7]
+                                },
+                                customize : function(doc){ 
+                                    doc.styles.tableHeader.alignment = 'left'
+                                }
+                            }
+                        )
+                    ],
                     columns: [
                         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                         {data: 'nama_lengkap', name: 'nama_lengkap'},

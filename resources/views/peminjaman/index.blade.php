@@ -141,7 +141,7 @@
                 </div>
                 <div class="modal-body" id="modalDetailBody">
                     <div>
-                        @include('peminjaman.detail')
+                        
                     </div>
                 </div>
             </div>
@@ -291,6 +291,66 @@
                         $('#modalDetailBody').html(data)
                     })
                 });
+                $('body').on('click', '.editFoto', function () {
+                    var id = $(this).data('id');
+                    var param = 'barang';
+                    $.get("{{ route('peminjaman.editfoto') }}" +'?id=' + id, function (data) {
+                        $('#modalTitleDetail').html("Edit Foto Inventaris");
+                        $('#modalDetail').modal('show');
+                        $('#modalDetailBody').html(data)
+                    })
+                });
+                $(document).on('click', '.deleteFoto', function (e) { 
+                    e.preventDefault();             
+                    var id = $(this).data("id");
+                    var path = $(this).data("path");
+                    var id_barang = $(this).data("id-barang");
+                    swal.fire({
+                        title: "Delete?",
+                        icon: 'question',
+                        text: "Apakah anda yakin akan menghapus data ini?",
+                        type: "warning",
+                        showCancelButton: !0,
+                        confirmButtonText: "Ya, hapus!",
+                        cancelButtonText: "Tidak, batalkan!",
+                        reverseButtons: !0
+                        }).then(function (e) {
+                            if (e.value === true) {
+                                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                                $.ajax({
+                                    type: "GET",
+                                    url: "{{ route('peminjaman.deletefoto') }}"+'?id='+ id + '&path=' + path,
+                                    data: {_token: CSRF_TOKEN},
+                                    success: function (results) {
+                                        if (results.success === true) {
+                                            swal.fire("Sukses menghapus data!", results.message, "success");
+                                            // refresh page after 2 seconds
+                                            // location.reload()
+                                            setTimeout(function(){
+                                                $.get("{{ route('peminjaman.editfoto') }}" +'?id=' + id_barang, function (data) {
+                                                    $('#modalTitleDetail').html("Edit Foto Inventaris");
+                                                    $('#modalDetail').modal('hide');
+                                                    $('#modalDetail').modal('show');
+                                                    $('#modalDetailBody').html(data)
+                                                })
+                                            },1);
+                                        } else {
+                                            swal.fire("Error!", results.message, "error");
+                                        }
+                                    },
+                                    error: function (data) {
+                                        console.log('Error:', data);
+                                    }
+                                });
+                            } else {
+                                e.dismiss;
+                            }
+
+                        }, function (dismiss) {
+                            return false;
+                        })
+                    
+                });
                 // display a modal
                 $(document).on('click', '#addBarang', function(event) {
                     event.preventDefault();
@@ -375,38 +435,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         })
-                    } else{
-                        // $('#formBarang').submit(function(e) {
-                        //     e.preventDefault();
-                        //     var formData = new FormData(this);
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: "{{ route('peminjaman.create') }}",
-                        //         data: formData,
-                        //         cache: false,
-                        //         contentType: false,
-                        //         processData: false,
-                        //         success: (results) => {
-                        //             if (results.success === true) {
-                        //                 swal.fire("Sukses!", results.message, "success");
-                        //                 // refresh page after 1 seconds
-                        //                 setTimeout(function(){
-                        //                     $('#formBarang').trigger("reset");
-                        //                     $('#modalBarang').modal('hide');
-                        //                     tablePeminjaman.draw()
-                        //                     tableBarang.draw()
-                        //                 },1000);
-                        //             } else {
-                        //                 swal.fire("Error!", results.message, "error");
-                        //             }
-                        //         },
-                        //         error: function (data) {
-                        //             console.log('Error:', data);
-                        //             $('#btnSaveBarang').html('Simpan Perubahan');
-                        //         }
-                        //     });
-                        // });
-                        
+                    } else{                        
                         let param = $('#param').val();
                         let id_barang = $('#id_barang').val();
                         let nama_barang = $('#nama_barang').val();
