@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Penduduk;
 use DataTables;
 
 class UsersController extends Controller
@@ -16,15 +17,16 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        return view('users.index');
+        $data_warga = Penduduk::latest()->get();
+        return view('users.index', compact('data_warga'));
     }
 
     public function getAllUsers(Request $request)
     {   
         if ($request->ajax()) {
             $data = DB::table('loginn AS l')
-                        // ->select('user_login.id', 'user_login.nama', 'user_login.username', 'user_login.id_lokasi', 'user_level.level', 'user_login.last_login', 'user_login.create_at', 'user_login.level as level_id')
-                        ->select('l.*')
+                        ->leftJoin('warga AS w', 'l.id_warga', '=', 'w.id')
+                        ->select('l.*', 'w.nama_lengkap')
                         ->get();
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -43,7 +45,17 @@ class UsersController extends Controller
                                     </a>';
                     return $actionBtn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('nama_warga', function($row)
+                {
+                    $id_warga = $row->nama_lengkap;
+                    $bg = $id_warga ? 'success' : 'warning';
+                    $btn = '<span data-id="'.$row->id.'" class="ubahwarga badge bg-'.$bg.' ">
+                                <i class="ti ti-user"></i>
+                                '.$row->nama_lengkap.'
+                            </span>';
+                    return $btn;
+                })
+                ->rawColumns(['action', 'nama_warga'])
                 ->make(true);
         }
         // echo json_encode($data->toArray());
@@ -76,7 +88,7 @@ class UsersController extends Controller
                     'username' => request('username'),
                     'password' => Hash::make(request('password')),
                     'leveldata' => request('level') ?? 'User',
-                    'id_warga' => request('id_warga') ?? 0
+                    'id_warga' => request('nama_warga') ?? 0
                 ]);
                 $success = true;
                 $message = 'User '.request('nama').' berhasil ditambahkan!';
@@ -108,7 +120,7 @@ class UsersController extends Controller
             'username' => ['required', 'string', 'min:4', 'max:255'],
             'old_username' => ['string', 'min:4', 'max:255'],
             'level' => ['string'],
-            'id_warga' => ['integer']
+            'nama_warga' => ['integer']
         ]);
         $success = false;
         $message = 'error';
@@ -121,7 +133,7 @@ class UsersController extends Controller
                     'nama' => request('nama'),
                     'username' => request('username'),
                     'leveldata' => request('level') ?? 'User',
-                    'id_warga' => request('id_warga') ?? 0
+                    'id_warga' => request('nama_warga') ?? 0
                 ]);
                 $success = true;
                 $message = 'User '.request('nama').' berhasil diperbarui!';
@@ -134,7 +146,7 @@ class UsersController extends Controller
                             ['nama' => request('nama'), 
                             'username' => request('username'), 
                             'leveldata' => request('level') ?? 'User', 
-                            'id_warga' => request('id_warga') ?? 0]
+                            'id_warga' => request('nama_warga') ?? 0]
                         );
             $success = true;
             $message = 'User '.request('nama').' berhasil diperbarui!';
@@ -168,7 +180,8 @@ class UsersController extends Controller
     {
         $id = $request->id;
         $data = DB::table('loginn AS l')
-        ->select('l.id', 'l.id_warga','l.nama', 'l.username', 'l.last_login', 'l.create_at', 'l.leveldata')
+        ->leftJoin('warga AS w', 'l.id_warga', '=', 'w.id')
+        ->select('l.id', 'l.id_warga','l.nama', 'l.username', 'l.last_login', 'l.create_at', 'l.leveldata', 'w.nama_lengkap')
         ->where('l.id', $id)
         ->get()
         ->toArray();

@@ -17,6 +17,18 @@
                 <input id="username" type="username" class="form-control" name="username"  value="" required>
             </div>
         </div>
+        <div class="row mb-3" id="group_warga">
+            <label for="namawarga" class="col-md-4 col-form-label text-md-end">Nama Warga</label>
+
+            <div class="col-md-6">
+                <select class="form-control form-select select2" name="nama_warga" id="nama_warga" placeholder="Nama Warga">
+                    <option selected disabled>Nama Warga</option>
+                    @foreach($data_warga as $warga)
+                    <option value="{{$warga->id}}">{{$warga->nama_lengkap}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
         <div class="row mb-3" id="group_level">
             <label class="col-md-4 col-form-label text-md-end">Level</label>
             <div class="col-md-6">

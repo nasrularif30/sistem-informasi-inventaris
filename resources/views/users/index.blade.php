@@ -43,9 +43,9 @@
                                     <tr>
                                         <th class="w-1">No</th>
                                         <th>Nama</th>
+                                        <th>Nama Warga</th>
                                         <th>Username</th>
                                         <th>Level</th>
-                                        <!-- <th>Lokasi</th> -->
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -60,7 +60,7 @@
     </div>
 </div>
     <!-- register modal -->
-    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="labelModalUser"
+    <div class="modal fade" id="modalUser" role="dialog" aria-labelledby="labelModalUser"
         aria-hidden="true">
         <div class="modal-dialog md" role="form">
             <div class="modal-content">
@@ -85,6 +85,12 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+                $('.select2').select2( {
+                    theme: "bootstrap-5",
+                    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+                    placeholder: $( this ).data( 'placeholder' ),
+                    dropdownParent: $("#modalUser")
+                });
                 var table = $('.table-user').DataTable({
                     processing: true,
                     serverSide: true,
@@ -93,9 +99,9 @@
                     columns: [
                         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                         {data: 'nama', name: 'nama'},
+                        {data: 'nama_warga', name: 'nama_warga'},
                         {data: 'username', name: 'username'},
                         {data: 'leveldata', name: 'leveldata'},
-                        // {data: 'id_lokasi', name: 'lokasi'},
                         {
                             data: 'action', 
                             name: 'action', 
@@ -110,6 +116,8 @@
                         $('#modalTitle').html("Edit Data User");
                         $('#id_user').val(id);
                         $('#nama').val(data[0].nama);
+                        // $('#nama_warga').val(data[0].id_warga);
+                        $('#nama_warga').val(data[0].id_warga).trigger('change');
                         $('#old_username').val(data[0].username);
                         $('#username').val(data[0].username);
                         $('#level').val(data[0].leveldata);
@@ -120,6 +128,7 @@
                         $('#group_username').show();
                         $('#group_level').show();
                         $('#group_createat').show();
+                        $('#group_warga').show();
                         $('#group_password').hide();
                         $('#group_confirmpassword').hide();
                         $('#btnEditUser').show();
@@ -136,6 +145,7 @@
                         $('#id_user').val(id);
                         $('#group_lastlogin').hide();
                         $('#group_createat').hide();
+                        $('#group_warga').hide();
                         $('#group_password').show();
                         $('#group_confirmpassword').show();
                         $('#group_nama').hide();
