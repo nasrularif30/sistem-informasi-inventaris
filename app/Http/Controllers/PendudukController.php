@@ -78,13 +78,19 @@ class PendudukController extends Controller
         }
         if(Auth::user()->leveldata == 'User'){
             $id = Auth::user()->id_warga ?? 0;
-            if($id == 0) return create();
             $data = Penduduk::where('id', $id)->get()->toArray();
+            if(!$data) return redirect()->route('penduduk.create');
             $data_alamat = Lokasi::latest()->get();
             $data_pekerjaan = Pekerjaan::latest()->get();
             $data_pendidikan = Pendidikan::latest()->get();
             $data_agama = Agama::latest()->groupBy('id')->get();
             return view('penduduk.edit', compact(['data', 'data_alamat', 'data_pekerjaan', 'data_pendidikan', 'data_agama']));
+        }
+        if(Auth::user()->leveldata == 'User'){
+            $id = Auth::user()->id_warga ?? 0;
+            $data = Penduduk::where('id', $id)->get()->toArray();
+            if(!$data) return redirect()->route('penduduk.create');
+            else return redirect()->route('penduduk.edit', ['id'=>$id]);
         }
         return view('penduduk.index',compact('penduduk'));
     }
@@ -106,6 +112,13 @@ class PendudukController extends Controller
             $id_lokasi = Penduduk::where('id', $id_warga)->get()->first();
             $id_lokasi = $id_lokasi->id_lokasi;
             $data_alamat = Lokasi::where('id', $id_lokasi)->latest()->get();
+        }
+        if(Auth::user()->leveldata == 'User'){
+            $id_warga = Auth::user()->id_warga;
+            $data = Penduduk::where('id', $id_warga)->get()->toArray();
+            if ($data) {
+                return redirect()->route('penduduk.edit', ['id'=>$id_warga]);
+            }
         }
         return view('penduduk.create', compact(['data_alamat', 'data_pekerjaan', 'data_pendidikan', 'data_agama']));
     }
@@ -135,6 +148,13 @@ class PendudukController extends Controller
         // if ($validator->fails()) {
         //    return response()->json(['success' => false, 'message' => $validator->errors()]);
         // }
+        $last_id = Penduduk::latest()->get()->first();
+        $id_warga = 0;
+        if (Auth::user()->leveldata == 'User') {
+            $id_warga = Auth::user()->id_warga == 0 ? $last_id->id + 1 : Auth::user()->id_warga;            
+        } else{
+            $id_warga = $last_id->id + 1;
+        }
         $nik = $request->input('nik');
         $nama = $request->input('nama');
         $alamat = $request->input('alamat');
@@ -166,7 +186,7 @@ class PendudukController extends Controller
             $file_kk = $file_name;
         }
     
-        DB::table('warga')->updateOrInsert(['nik' => $nik],
+        DB::table('warga')->updateOrInsert(['nik' => $nik, 'id' => $id_warga],
                                             ['nama_lengkap' => $nama,
                                             'alamat' => $alamat,
                                             'tanggal_lahir' => $tgl_lahir,

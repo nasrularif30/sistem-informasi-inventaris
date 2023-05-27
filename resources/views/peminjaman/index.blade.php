@@ -64,10 +64,12 @@
                 <div class="card">
                     <div class="card-header">
                     <h3 class="card-title">Data barang</h3>
+                    @if(Auth::user()->leveldata == 'Admin' || Auth::user()->leveldata == 'Ketua RT' || Auth::user()->leveldata == 'Sekretaris')
                     <button id="addBarang" name="addBarang" type="button" class="btn btn-square btn-secondary ms-auto" data-bs-toggle="modal" data-bs-target="#modalBarang">
                         <i class="ti ti-plus"></i>
                         Barang
                     </button>
+                    @endif
                     </div>
                     <div class="card-body border-bottom py-3">
                         <div class="table-responsive">
