@@ -146,7 +146,7 @@
                                         swal.fire("Sukses menghapus data!", results.message, "success");
                                         // refresh page after 2 seconds
                                         setTimeout(function(){
-                                            tablePPenduduk.draw()
+                                            tablePenduduk.draw()
                                         },1500);
                                     } else {
                                         swal.fire("Error!", results.message, "error");

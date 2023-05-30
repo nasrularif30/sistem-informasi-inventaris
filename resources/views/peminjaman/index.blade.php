@@ -27,7 +27,7 @@
 <div class="page-body">
     <div class="container-xl">
         <div class="row row-deck row-cards">
-            @if(Auth::user()->leveldata == 'Admin' || Auth::user()->leveldata == 'Ketua RT' || Auth::user()->leveldata == 'Sekretaris')
+            @if(Auth::user()->leveldata == 'Admin' || Auth::user()->leveldata == 'Ketua RT')
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
@@ -64,7 +64,7 @@
                 <div class="card">
                     <div class="card-header">
                     <h3 class="card-title">Data barang</h3>
-                    @if(Auth::user()->leveldata == 'Admin' || Auth::user()->leveldata == 'Ketua RT' || Auth::user()->leveldata == 'Sekretaris')
+                    @if(Auth::user()->leveldata == 'Admin' || Auth::user()->leveldata == 'Ketua RT')
                     <button id="addBarang" name="addBarang" type="button" class="btn btn-square btn-secondary ms-auto" data-bs-toggle="modal" data-bs-target="#modalBarang">
                         <i class="ti ti-plus"></i>
                         Barang

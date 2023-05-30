@@ -8,7 +8,9 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Session;
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -39,33 +41,35 @@ class LoginController extends Controller
  
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard')->withSuccess('Login Berhasil');;
+            return redirect()->intended('dashboard')->withSuccess('Login Berhasil');
         } else{
             return redirect("login")->withSuccess('Username atau password tidak benar!');
         }
         return redirect("login")->withSuccess('Username atau password tidak benar!');
- 
-        // $check = DB::table('user_login')
-        //             ->where('username', $credentials['username'])
-        //             ->get()
-        //             ->toArray();
+    }
+    public function authenticateApi($user_id){
+      
+        if(Auth::loginUsingId($user_id)){
+        $user = User::where('id', $user_id)->first();
+            
+            if($user->leveldata == 'Sekretaris'){
+                return response()->json(['success'=>1,'message'=>'Berhasil Login Bendahara','url'=>'']);
+            }elseif($user->leveldata == 'Ketua RT'){
+                return response()->json(['success'=>1,'message'=>'Berhasil Login Ketua','url'=>'']);
+            }elseif($user->leveldata == 'Admin'){
+                return response()->json(['success'=>1,'message'=>'Berhasil Login Admin','url'=>'']);
+            }elseif($user->leveldata == 'User'){
+                return response()->json(['success'=>1,'message'=>'Berhasil Login User','url'=>'']);
+            }elseif($user->leveldata == 'PJ'){
+                return response()->json(['success'=>1,'message'=>'Berhasil Login User','url'=>'']);
+            }else{
+                return response()->json(['success'=>0,'message'=>'role tidak ada']);
+            }
+        }else{
+            return response()->json(['success'=>0,'message'=>'Anda Gagal Login',]);
+        }
 
-        // if(count($check)>0){
-        //     if(Hash::check($credentials['password'], $check[0]->password)){
-        //         Session::put('username', $check[0]->username);
-        //         Session::put('level', $check[0]->level);
-        //         Session::put('id_lokasi', $check[0]->id_lokasi);
-        //         $request->session()->regenerate();
-        //         return redirect()->intended('dashboard');
-        //     }
-        //     else{
-        //         $request->session()->flash('error', 'Username atau password tidak benar');
-        //         return redirect('/');
-        //     }
-        // } else{
-        //     $request->session()->flash('error', 'Username tidak terdaftar');
-        //     return redirect('/');
-        // }
+        // return back()->with('loginError','login failed!');
     }
     public function logout() {
         Session::flush();

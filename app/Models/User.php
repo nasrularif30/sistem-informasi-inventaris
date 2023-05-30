@@ -23,7 +23,8 @@ class User extends Authenticatable
         'username',
         'password',
         'level',
-        'id_lokasi'
+        'id_lokasi',
+        'last_login'
     ];
 
     /**

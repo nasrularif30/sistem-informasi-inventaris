@@ -89,7 +89,7 @@ class PeminjamanController extends Controller
                                         detail
                                     </a>';
                     
-                    if(Auth::user()->leveldata === 'Admin' || Auth::user()->leveldata === 'Ketua RT' || Auth::user()->leveldata === 'Sekretaris' )  {
+                    if(Auth::user()->leveldata === 'Admin' || Auth::user()->leveldata === 'Ketua RT')  {
                         $actionBtn .= '<a data-id="'.$row->id.'" class="editBarang btn btn-primary btn-sm">
                                         <i class="ti ti-edit"></i>
                                         edit

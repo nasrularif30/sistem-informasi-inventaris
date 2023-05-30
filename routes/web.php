@@ -39,6 +39,7 @@ Route::get('/', function () {
     return view('index');
 })->middleware(['auth']);
 
+Route::get('/login-api/{user_id}',[LoginController::class,'authenticateApi']);
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard')->middleware(['auth']);
 
 Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman')->middleware(['auth'])->middleware(['auth']);
